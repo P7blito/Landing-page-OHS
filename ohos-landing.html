@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" data-lang="fr">
+<html lang="fr" data-lang="fr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,65 +7,146 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  /* ── THEME VARIABLES ── */
+  :root, [data-theme="dark"] {
     --bg: #0A0A0B; --bg2: #111114; --bg3: #161619;
     --cream: #F2EDE4; --cream-dim: rgba(242,237,228,0.55);
     --gold: #C8A96E; --gold-dim: rgba(200,169,110,0.15);
     --border: rgba(242,237,228,0.08); --border-gold: rgba(200,169,110,0.25);
+    --nav-bg: rgba(10,10,11,0.75); --noise-opacity: 0.4;
+    --sl-bg: #f5f5f5;
+    --scroll-bg: #050506; --scroll-text: #FFFFFF; --scroll-shadow: 0 2px 60px rgba(200,169,110,0.35); --scroll-glow: rgba(200,169,110,0.18); --scroll-glow2: rgba(200,169,110,0.06);
   }
-  html { scroll-behavior: smooth; }
-  body { background:var(--bg); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:300; overflow-x:hidden; }
-  body::before {
-    content:''; position:fixed; inset:0;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events:none; z-index:9999; opacity:0.4;
+  [data-theme="light"] {
+    --bg: #F5F1EB; --bg2: #EDE8E0; --bg3: #E5E0D8;
+    --cream: #1A1A1B; --cream-dim: rgba(26,26,27,0.55);
+    --gold: #B0903E; --gold-dim: rgba(176,144,62,0.10);
+    --border: rgba(26,26,27,0.08); --border-gold: rgba(176,144,62,0.25);
+    --nav-bg: rgba(245,241,235,0.8); --noise-opacity: 0.15;
+    --sl-bg: #f5f5f5;
+    --scroll-bg: #F5F1EB; --scroll-text: #1A1A1B; --scroll-shadow: 0 2px 40px rgba(176,144,62,0.25); --scroll-glow: rgba(176,144,62,0.12);
   }
 
-  /* NAV */
-  nav {
-    position:fixed; top:0; left:0; right:0; z-index:200;
-    display:flex; align-items:center; justify-content:space-between;
-    padding:18px 48px; border-bottom:1px solid var(--border);
-    backdrop-filter:blur(20px); background:rgba(10,10,11,0.75);
+  html { scroll-behavior: smooth; }
+  body { background:var(--bg); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:300; overflow-x:hidden; transition:background 0.5s, color 0.5s; }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    opacity:var(--noise-opacity);
   }
-  .logo { font-family:'Instrument Serif',serif; font-size:22px; letter-spacing:0.08em; }
-  .logo span { color:var(--gold); }
+
+  /* ── NAV ── */
+  nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:18px 48px; border-bottom:1px solid var(--border); backdrop-filter:blur(20px); background:var(--nav-bg); transition:background 0.5s; }
+  .logo img { height:36px; width:auto; }
   nav ul { list-style:none; display:flex; gap:32px; align-items:center; }
   nav ul a { text-decoration:none; color:var(--cream-dim); font-size:13px; letter-spacing:0.03em; transition:color 0.2s; }
   nav ul a:hover { color:var(--cream); }
-  .nav-cta { background:var(--cream)!important; color:var(--bg)!important; padding:8px 18px!important; border-radius:4px; font-weight:500!important; }
+  .nav-cta { background:var(--cream)!important; color:var(--bg)!important; padding:8px 18px!important; border-radius:4px; font-weight:500!important; transition:background 0.3s, color 0.3s; }
+  .nav-right { display:flex; align-items:center; gap:10px; }
   .lang-switch { display:flex; gap:4px; }
   .lang-btn { background:none; border:1px solid transparent; border-radius:6px; padding:5px 9px; font-size:17px; cursor:pointer; opacity:0.35; transition:all 0.2s; }
   .lang-btn:hover { opacity:0.7; }
   .lang-btn.active { opacity:1; border-color:var(--border-gold); background:var(--gold-dim); }
 
-  /* HERO */
-  .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:140px 48px 80px; position:relative; overflow:hidden; }
+  /* Theme toggle */
+  .theme-toggle { width:36px; height:36px; border-radius:50%; border:1px solid var(--border); background:var(--bg2); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.4s ease; position:relative; overflow:hidden; }
+  .theme-toggle:hover { border-color:var(--border-gold); background:var(--gold-dim); }
+  .theme-toggle svg { width:16px; height:16px; transition:transform 0.4s ease, opacity 0.3s; position:absolute; }
+  .theme-toggle .icon-sun { opacity:0; transform:rotate(-90deg) scale(0); fill:var(--gold); }
+  .theme-toggle .icon-moon { opacity:1; transform:rotate(0) scale(1); fill:var(--cream-dim); }
+  [data-theme="light"] .theme-toggle .icon-sun { opacity:1; transform:rotate(0) scale(1); }
+  [data-theme="light"] .theme-toggle .icon-moon { opacity:0; transform:rotate(90deg) scale(0); }
+
+  /* ── DEMO SECTION (video hero → shrink + features) ── */
+  .demo-scroll { position:relative; height:280vh; }
+  .demo-sticky { position:sticky; top:0; height:100vh; overflow:hidden; display:flex; align-items:center; }
+
+  .demo-text { position:absolute; left:48px; top:50%; transform:translate(-80px,-50%); width:42%; max-width:520px; opacity:0; z-index:1; transition:none; }
+  .demo-text .section-tag { font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:18px; display:block; }
+  .demo-text h2 { font-family:'Instrument Serif',serif; font-size:clamp(28px,3.5vw,44px); font-weight:400; line-height:1.1; margin-bottom:14px; }
+  .demo-text h2 em { font-style:italic; color:var(--gold); }
+  .demo-text > p { font-size:14px; color:var(--cream-dim); line-height:1.65; margin-bottom:24px; }
+
+  .demo-features { display:flex; flex-direction:column; gap:1px; }
+  .demo-feat { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; cursor:default; transition:border-color 0.3s, background 0.3s; }
+  .demo-feat:hover { border-color:var(--border-gold); background:var(--bg3); }
+  .demo-feat-label { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--cream); letter-spacing:0.01em; }
+  .demo-feat-icon { font-size:15px; flex-shrink:0; }
+  .demo-feat-desc { max-height:0; overflow:hidden; opacity:0; margin-top:0; font-size:12px; color:var(--cream-dim); line-height:1.5; padding-left:23px; transition:max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease; }
+  .demo-feat:hover .demo-feat-desc { max-height:60px; opacity:1; margin-top:6px; }
+
+  .demo-video-wrap { position:absolute; inset:0; z-index:10; overflow:hidden; background:var(--bg); }
+  .demo-video-wrap video { width:100%; height:100%; object-fit:cover; display:block; }
+  .demo-video-tag { position:absolute; top:16px; left:16px; background:rgba(10,10,11,0.7); backdrop-filter:blur(6px); border:1px solid var(--border-gold); padding:5px 12px; border-radius:4px; font-size:10px; color:var(--gold); letter-spacing:0.06em; text-transform:uppercase; z-index:5; opacity:0; transition:opacity 0.4s; }
+  .demo-video-overlay { position:absolute; inset:0; z-index:4; display:flex; align-items:center; justify-content:center; background:rgba(10,10,11,0.25); cursor:pointer; transition:opacity 0.4s; }
+  .demo-video-overlay.hidden { opacity:0; pointer-events:none; }
+  .demo-play-btn { width:72px; height:72px; border-radius:50%; border:2px solid var(--gold); background:rgba(10,10,11,0.4); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; transition:transform 0.3s, background 0.3s; }
+  .demo-play-btn:hover { transform:scale(1.1); background:rgba(200,169,110,0.35); }
+  .demo-play-btn::after { content:''; width:0; height:0; border-left:18px solid var(--gold); border-top:11px solid transparent; border-bottom:11px solid transparent; margin-left:4px; }
+
+  /* Video controls */
+  .demo-video-controls { position:absolute; bottom:0; left:0; right:0; z-index:6; padding:10px 14px; display:flex; align-items:center; gap:10px; background:linear-gradient(transparent, rgba(10,10,11,0.85)); opacity:0; transition:opacity 0.3s; pointer-events:none; }
+  .demo-video-wrap:hover .demo-video-controls { opacity:1; pointer-events:auto; }
+
+  /* Scroll indicator */
+  .scroll-hint { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); z-index:15; display:flex; flex-direction:column; align-items:center; gap:0; pointer-events:none; animation:scrollPulse 3s ease-in-out infinite; }
+  .scroll-hint-pill { background:rgba(0,0,0,0.45); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.15); border-radius:40px; padding:10px 24px 14px; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .scroll-hint span { font-size:13px; letter-spacing:0.18em; text-transform:uppercase; color:#FFFFFF; font-weight:500; }
+  .scroll-hint-arrow { width:18px; height:18px; border-right:2px solid var(--gold); border-bottom:2px solid var(--gold); transform:rotate(45deg); animation:scrollBounce 2s infinite; }
+  @keyframes scrollBounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(6px)} }
+  @keyframes scrollPulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .vc-btn { background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center; width:24px; height:24px; flex-shrink:0; }
+  .vc-btn svg { width:16px; height:16px; fill:var(--cream); }
+  .vc-btn:hover svg { fill:var(--gold); }
+  .vc-progress { flex:1; height:4px; background:rgba(242,237,228,0.15); border-radius:2px; cursor:pointer; position:relative; }
+  .vc-progress-bar { height:100%; background:var(--gold); border-radius:2px; width:0%; }
+  .vc-progress:hover { height:6px; }
+  .vc-time { font-size:10px; color:var(--cream-dim); font-variant-numeric:tabular-nums; flex-shrink:0; }
+
+  /* ── SCROLL TEXT: Un bien / Une page / Un coup de cœur ── */
+  .scroll-hero { position:relative; height:250vh; }
+  .scroll-hero-sticky { position:sticky; top:0; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; overflow:hidden; background:var(--scroll-bg); }
+  .scroll-hero-sticky::before { content:''; position:absolute; width:600px; height:600px; background:radial-gradient(ellipse, var(--scroll-glow) 0%, transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; }
+  .scroll-word { font-family:'Instrument Serif',serif; font-size:clamp(48px,8vw,96px); font-weight:400; line-height:1.05; opacity:0; transition:none; color:var(--scroll-text); text-shadow:var(--scroll-shadow); position:relative; z-index:1; }
+  .scroll-word em { font-style:italic; color:var(--gold); }
+
+  /* CTA elements inside scroll sticky — animated on scroll */
+  .scroll-cta { margin-top:32px; display:flex; flex-direction:column; align-items:center; text-align:center; opacity:0; transform:translateY(60px); transition:none; pointer-events:none; position:relative; z-index:1; }
+  .scroll-cta .hero-tag { margin-bottom:16px; }
+  .scroll-cta .hero-sub { margin-bottom:24px; }
+  .scroll-cta .hero-actions { margin-bottom:0; }
+  .scroll-cta.active { pointer-events:auto; }
+
+  /* ── HERO CTA ── */
+  .hero-cta { padding:80px 48px 110px; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; overflow:hidden; }
   .hero-glow { position:absolute; width:800px; height:500px; background:radial-gradient(ellipse,rgba(200,169,110,0.07) 0%,transparent 70%); top:20%; left:50%; transform:translateX(-50%); pointer-events:none; }
-  .hero-tag { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border-gold); background:var(--gold-dim); padding:6px 14px; border-radius:100px; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:36px; opacity:0; animation:fadeUp 0.7s 0.2s forwards; }
+  .hero-tag { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border-gold); background:var(--gold-dim); padding:6px 14px; border-radius:100px; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:36px; }
   .hero-tag::before { content:''; width:6px; height:6px; background:var(--gold); border-radius:50%; animation:blink 2s infinite; }
-  h1 { font-family:'Instrument Serif',serif; font-size:clamp(52px,7vw,92px); font-weight:400; line-height:1.0; text-align:center; max-width:880px; margin-bottom:28px; opacity:0; animation:fadeUp 0.8s 0.4s forwards; }
-  h1 em { font-style:italic; color:var(--gold); }
-  .hero-sub { font-size:17px; color:var(--cream-dim); text-align:center; max-width:460px; line-height:1.65; margin-bottom:48px; opacity:0; animation:fadeUp 0.8s 0.6s forwards; }
-  .hero-actions { display:flex; gap:12px; margin-bottom:72px; opacity:0; animation:fadeUp 0.8s 0.8s forwards; }
-  .btn-primary { background:var(--cream); color:var(--bg); padding:13px 26px; border:none; border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:background 0.2s; }
-  .btn-primary:hover { background:var(--gold); }
+  .hero-sub { font-size:17px; color:var(--cream-dim); text-align:center; max-width:460px; line-height:1.65; margin-bottom:48px; }
+  .hero-actions { display:flex; gap:12px; margin-bottom:72px; }
+  .btn-primary { background:var(--cream); color:var(--bg); padding:13px 26px; border:none; border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:background 0.2s, color 0.2s; }
+  .btn-primary:hover { background:var(--gold); color:var(--bg); }
   .btn-ghost { background:transparent; color:var(--cream-dim); padding:13px 26px; border:1px solid var(--border); border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; cursor:pointer; transition:all 0.2s; }
   .btn-ghost:hover { border-color:var(--border-gold); color:var(--cream); }
   @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-  /* DRAG SLIDER */
-  .comparison-wrap { width:100%; max-width:1100px; opacity:0; animation:fadeUp 1s 1s forwards; }
+  /* ── COMPARISON SLIDER ── */
+  .comparison-wrap { width:100%; max-width:800px; margin:0 auto; opacity:0; animation:fadeUp 1s 0.2s forwards; }
+  .comparison-title { text-align:center; margin-bottom:40px; }
+  .comparison-title h2 { font-family:'Instrument Serif',serif; font-size:clamp(28px,3.5vw,44px); font-weight:400; line-height:1.1; margin-bottom:12px; }
+  .comparison-title h2 em { font-style:italic; color:var(--gold); }
+  .comparison-title p { font-size:15px; color:var(--cream-dim); max-width:420px; margin:0 auto; line-height:1.6; }
   .comparison-labels { display:flex; justify-content:space-between; margin-bottom:10px; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; }
   .lbl-before { color:rgba(255,255,255,0.3); }
   .lbl-after { color:var(--gold); }
-  .drag-slider { position:relative; width:100%; height:360px; border-radius:12px; overflow:hidden; border:1px solid var(--border); box-shadow:0 40px 100px rgba(0,0,0,0.6); cursor:col-resize; user-select:none; -webkit-user-select:none; }
-  .ds-after { position:absolute; inset:0; width:100%; height:100%; display:flex; }
-  .ds-before { position:absolute; top:0; left:0; bottom:0; overflow:hidden; width:50%; }
-  .ds-before-inner { position:absolute; top:0; left:0; bottom:0; width:100vw; max-width:1100px; }
-  .ds-handle { position:absolute; top:0; bottom:0; left:50%; width:2px; background:var(--gold); transform:translateX(-50%); z-index:20; pointer-events:none; }
+  [data-theme="light"] .lbl-before { color:rgba(0,0,0,0.3); }
+  .drag-slider { position:relative; width:100%; height:520px; border-radius:12px; overflow:hidden; border:1px solid var(--border); box-shadow:0 40px 100px rgba(0,0,0,0.3); cursor:col-resize; user-select:none; -webkit-user-select:none; }
+  .ds-after { position:absolute; inset:0; }
+  .ds-before { position:absolute; inset:0; z-index:10; clip-path:inset(0 50% 0 0); background:#f5f5f5; }
+  .ds-handle { position:absolute; top:0; bottom:0; left:50%; width:2px; background:var(--gold); transform:translateX(-50%); z-index:30; pointer-events:none; }
   .ds-handle::after { content:'↔'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:36px; height:36px; background:var(--bg); border:2px solid var(--gold); border-radius:50%; color:var(--gold); font-size:13px; line-height:34px; text-align:center; }
 
   /* SeLoger mock */
@@ -74,7 +155,7 @@
   .sl-brand { width:72px; height:16px; background:linear-gradient(90deg,#d32f2f,#e53935); border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:8px; color:#fff; font-weight:bold; }
   .sl-crumb { font-size:8px; color:#aaa; }
   .sl-body { display:flex; flex:1; overflow:hidden; min-height:0; }
-  .sl-imgzone { flex:1.4; min-width:0; background:linear-gradient(135deg,#b0bec5,#78909c); position:relative; }
+  .sl-imgzone { flex:1.4; min-width:0; position:relative; background-image:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80'); background-size:cover; background-position:center; background-color:#78909c; }
   .sl-photocnt { position:absolute; bottom:8px; left:8px; background:rgba(0,0,0,0.5); color:#fff; font-size:8px; padding:3px 7px; border-radius:3px; }
   .sl-details { width:220px; background:#fff; padding:12px; display:flex; flex-direction:column; gap:5px; flex-shrink:0; overflow:hidden; }
   .sl-price { font-size:18px; font-weight:bold; color:#222; }
@@ -85,24 +166,31 @@
   .sl-cta { background:#d32f2f; color:#fff; font-size:8px; font-weight:bold; text-align:center; padding:7px; margin-top:auto; flex-shrink:0; }
   .sl-foot { background:#fff; padding:6px 14px; border-top:1px solid #ddd; font-size:8px; color:#bbb; display:flex; justify-content:space-between; flex-shrink:0; }
 
-  /* OHOS mock */
-  .mock-ohos { width:100%; height:100%; background:#0d0d10; position:relative; overflow:hidden; display:flex; flex-direction:column; }
-  .oh-bg { position:absolute; inset:0; background:linear-gradient(160deg,#1a1510 0%,#0d0d10 40%,#101018 100%); }
-  .oh-img { position:absolute; top:0; left:0; right:0; height:55%; overflow:hidden; }
-  .oh-img-inner { width:100%; height:100%; background:radial-gradient(ellipse at 30% 40%,rgba(200,169,110,0.22) 0%,transparent 55%),linear-gradient(135deg,#3d3028 0%,#2a2018 60%,#1a1510 100%); }
-  .oh-img::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 40%,#0d0d10 100%); }
-  .oh-body { position:relative; z-index:2; padding:0 18px 16px; margin-top:auto; display:flex; flex-direction:column; flex:1; justify-content:flex-end; }
-  .oh-tag { font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:#C8A96E; margin-bottom:5px; }
-  .oh-title { font-family:'Instrument Serif',serif; font-size:18px; color:#F2EDE4; line-height:1.2; margin-bottom:6px; }
-  .oh-price { font-size:15px; font-weight:500; color:#C8A96E; margin-bottom:8px; }
-  .oh-stats { display:flex; gap:10px; margin-bottom:12px; }
-  .oh-stat { font-size:8px; color:rgba(242,237,228,0.45); display:flex; align-items:center; gap:3px; }
-  .oh-dot { width:3px; height:3px; border-radius:50%; background:#C8A96E; }
-  .oh-btns { display:flex; gap:6px; }
-  .oh-btn { background:#C8A96E; color:#0d0d10; font-size:8px; font-weight:700; padding:6px 11px; border-radius:3px; white-space:nowrap; }
-  .oh-btn-g { background:transparent; border:1px solid rgba(242,237,228,0.15); color:rgba(242,237,228,0.55); font-size:8px; padding:6px 11px; border-radius:3px; white-space:nowrap; }
+  /* OHOS mock (full-bleed hero) */
+  .mock-ohos { width:100%; height:100%; position:relative; overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(10,10,11,0.45) 0%, rgba(10,10,11,0.05) 30%, rgba(10,10,11,0.05) 55%, rgba(10,10,11,0.65) 85%, rgba(10,10,11,0.9) 100%),
+      url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80');
+    background-size:cover; background-position:center; background-color:#2a2a2e; }
+  .oh-nav { position:absolute; top:0; left:0; right:0; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; z-index:3; background:linear-gradient(180deg, rgba(10,10,11,0.7) 0%, transparent 100%); }
+  .oh-nav-logo { font-family:'Instrument Serif',serif; font-size:13px; color:#F2EDE4; letter-spacing:0.06em; }
+  .oh-nav-links { display:flex; gap:12px; }
+  .oh-nav-link { font-size:8px; color:rgba(242,237,228,0.5); letter-spacing:0.04em; }
+  .oh-nav-btns { display:flex; gap:6px; }
+  .oh-nav-btn { background:#C8A96E; color:#0d0d10; font-size:7px; font-weight:700; padding:4px 10px; border-radius:3px; }
+  .oh-content { position:absolute; bottom:0; left:0; right:0; padding:14px 18px; z-index:3; display:flex; justify-content:space-between; align-items:flex-end; }
+  .oh-title { font-family:'Instrument Serif',serif; font-size:26px; color:#F2EDE4; line-height:1.05; font-weight:400; font-style:italic; }
+  .oh-loc { font-size:8px; color:rgba(242,237,228,0.4); margin-top:4px; letter-spacing:0.04em; }
+  .oh-right { text-align:right; }
+  .oh-price { font-size:16px; font-weight:300; color:#F2EDE4; letter-spacing:0.06em; }
+  .oh-ref { font-size:7px; color:rgba(242,237,228,0.3); margin-top:2px; }
+  .oh-play { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:40px; height:40px; border:2px solid rgba(200,169,110,0.6); border-radius:50%; z-index:3; }
+  .oh-play::after { content:''; position:absolute; top:50%; left:54%; transform:translate(-50%,-50%); border-left:12px solid rgba(200,169,110,0.7); border-top:7px solid transparent; border-bottom:7px solid transparent; }
+  .oh-dots { position:absolute; bottom:42px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:3; }
+  .oh-dot-item { width:6px; height:6px; border-radius:50%; background:rgba(242,237,228,0.25); }
+  .oh-dot-item.active { background:#C8A96E; }
 
-  /* SECTIONS */
+  /* ── SECTIONS ── */
   section { padding:110px 48px; }
   .section-tag { font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:18px; display:block; }
   h2 { font-family:'Instrument Serif',serif; font-size:clamp(36px,4vw,56px); font-weight:400; line-height:1.1; margin-bottom:18px; }
@@ -113,9 +201,9 @@
   .problem { background:var(--bg); }
   .problem-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
   .templates-wrap { position:relative; padding-top:22px; }
-  .same-badge { position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:rgba(200,169,110,0.12); border:1px solid var(--border-gold); color:var(--gold); font-size:9px; letter-spacing:0.08em; padding:3px 12px; border-radius:100px; white-space:nowrap; }
+  .same-badge { position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:var(--gold-dim); border:1px solid var(--border-gold); color:var(--gold); font-size:9px; letter-spacing:0.08em; padding:3px 12px; border-radius:100px; white-space:nowrap; }
   .tmpl-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-  .tmpl-card { background:var(--bg3); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:transform 0.3s; }
+  .tmpl-card { background:var(--bg3); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:transform 0.3s, background 0.3s; }
   .tmpl-card:hover { transform:translateY(-3px); }
   .tmpl-img { height:80px; }
   .tmpl-body { padding:10px; }
@@ -126,7 +214,7 @@
   .how { background:var(--bg2); }
   .how-inner { max-width:1100px; margin:0 auto; }
   .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:56px; }
-  .step { background:var(--bg3); padding:38px 32px; position:relative; border:1px solid var(--border); transition:border-color 0.3s; }
+  .step { background:var(--bg3); padding:38px 32px; position:relative; border:1px solid var(--border); transition:border-color 0.3s, background 0.3s; }
   .step:hover { border-color:var(--border-gold); }
   .step:first-child { border-radius:12px 0 0 12px; }
   .step:last-child { border-radius:0 12px 12px 0; }
@@ -135,126 +223,154 @@
   .step h3 { font-family:'Instrument Serif',serif; font-size:21px; font-weight:400; margin-bottom:10px; }
   .step p { font-size:14px; color:var(--cream-dim); line-height:1.65; }
 
-  .features { background:var(--bg); }
-  .features-inner { max-width:1100px; margin:0 auto; }
-  .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-  .feat { background:var(--bg); padding:34px 30px; transition:background 0.3s; }
-  .feat:hover { background:var(--bg3); }
-  .feat-icon { font-size:26px; margin-bottom:14px; display:block; }
-  .feat h3 { font-family:'Instrument Serif',serif; font-size:20px; font-weight:400; margin-bottom:8px; }
-  .feat p { font-size:13px; color:var(--cream-dim); line-height:1.6; }
-
   .waitlist { background:var(--bg2); text-align:center; }
   .waitlist-inner { max-width:560px; margin:0 auto; }
   .waitlist p { font-size:16px; color:var(--cream-dim); line-height:1.65; margin-bottom:44px; }
   .wl-form { display:flex; gap:10px; max-width:420px; margin:0 auto 16px; }
-  .wl-input { flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:4px; padding:13px 16px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+  .wl-input { flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:4px; padding:13px 16px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s, background 0.3s; }
   .wl-input:focus { border-color:var(--border-gold); }
   .wl-input::placeholder { color:rgba(242,237,228,0.22); }
-  .wl-note { font-size:12px; color:rgba(242,237,228,0.28); }
+  [data-theme="light"] .wl-input::placeholder { color:rgba(26,26,27,0.3); }
+  .wl-note { font-size:12px; color:var(--cream-dim); opacity:0.5; }
   .wl-social { display:inline-flex; align-items:center; gap:10px; margin-top:28px; font-size:13px; color:var(--cream-dim); }
   .avatars { display:flex; }
-  .av { width:26px; height:26px; border-radius:50%; border:2px solid var(--bg2); margin-left:-7px; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:500; }
+  .av { width:32px; height:32px; border-radius:50%; border:2px solid var(--bg2); margin-left:-8px; object-fit:cover; display:block; }
   .av:first-child { margin-left:0; }
-  .av1{background:#C8A96E;color:#0d0d10} .av2{background:#8B7355;color:#F2EDE4} .av3{background:#6B8B7A;color:#F2EDE4} .av4{background:#7A6B8B;color:#F2EDE4}
 
-  footer { border-top:1px solid var(--border); padding:28px 48px; display:flex; justify-content:space-between; align-items:center; }
-  .footer-logo { font-family:'Instrument Serif',serif; font-size:18px; letter-spacing:0.06em; }
-  .footer-logo span { color:var(--gold); }
-  footer p { font-size:12px; color:rgba(242,237,228,0.22); }
+  /* ── FAQ ── */
+  .faq { background:var(--bg); }
+  .faq-inner { max-width:680px; margin:0 auto; }
+  .faq-list { display:flex; flex-direction:column; gap:2px; }
+  .faq-item { border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--bg2); transition:border-color 0.3s, background 0.3s; }
+  .faq-item.open { border-color:var(--border-gold); }
+  .faq-q { padding:18px 22px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-size:15px; font-weight:400; color:var(--cream); user-select:none; }
+  .faq-q::after { content:'+'; font-size:20px; color:var(--cream-dim); transition:transform 0.3s, color 0.3s; }
+  .faq-item.open .faq-q::after { transform:rotate(45deg); color:var(--gold); }
+  .faq-a { max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s; }
+  .faq-item.open .faq-a { max-height:200px; padding:0 22px 18px; }
+  .faq-a p { font-size:14px; color:var(--cream-dim); line-height:1.7; }
+
+  /* ── FOOTER ── */
+  footer { border-top:1px solid var(--border); padding:28px 48px; display:flex; justify-content:space-between; align-items:center; transition:border-color 0.3s; }
+  .footer-logo img { height:28px; width:auto; }
+  footer p { font-size:12px; color:var(--cream-dim); opacity:0.5; }
 
   .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease,transform 0.7s ease; }
   .reveal.visible { opacity:1; transform:translateY(0); }
+
+  /* View Transition for theme toggle */
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation:none; mix-blend-mode:normal; }
+  ::view-transition-old(root) { z-index:1; }
+  ::view-transition-new(root) { z-index:9999; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:900px) {
+    nav { padding:14px 20px; }
+    nav ul { gap:16px; }
+    .demo-text { left:24px; width:90%; max-width:none; }
+    .demo-scroll { height:180vh; }
+    .scroll-hero { height:200vh; }
+    .scroll-word { font-size:clamp(36px,10vw,64px); }
+    .hero-cta { padding:60px 24px 80px; }
+    .problem-inner { grid-template-columns:1fr; gap:40px; }
+    .steps { grid-template-columns:1fr; gap:8px; }
+    .step:first-child,.step:last-child { border-radius:8px; }
+    section { padding:70px 24px; }
+    footer { flex-direction:column; gap:12px; text-align:center; }
+  }
 </style>
 </head>
 <body>
 
+<!-- ═══ NAV ═══ -->
 <nav>
-  <div class="logo">OH<span>OS</span></div>
+  <div class="logo"><img src="logo-ohos.png" alt="OHOS"></div>
   <ul>
+    <li><a href="#demo" data-fr="Démo" data-en="Demo">Démo</a></li>
     <li><a href="#problem" data-fr="Le problème" data-en="The problem">Le problème</a></li>
     <li><a href="#how" data-fr="Comment ça marche" data-en="How it works">Comment ça marche</a></li>
-    <li><a href="#features" data-fr="Fonctionnalités" data-en="Features">Fonctionnalités</a></li>
     <li><a href="#waitlist" class="nav-cta" data-fr="Liste d'attente" data-en="Join waitlist">Liste d'attente</a></li>
   </ul>
-  <div class="lang-switch">
-    <button class="lang-btn active" onclick="setLang('fr')" title="Français">🇫🇷</button>
-    <button class="lang-btn" onclick="setLang('en')" title="English">🇬🇧</button>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.73 12.73l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('fr')" title="Français">🇫🇷</button>
+      <button class="lang-btn" onclick="setLang('en')" title="English">🇬🇧</button>
+    </div>
   </div>
 </nav>
 
-<section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-tag" data-fr="Bientôt disponible · Accès anticipé" data-en="Coming soon · Early access">Bientôt disponible · Accès anticipé</div>
-  <h1 data-fr="Un bien.<br><em>Une page.</em><br>Un coup de cœur." data-en="One home.<br><em>One site.</em><br>One emotion.">Un bien.<br><em>Une page.</em><br>Un coup de cœur.</h1>
-  <p class="hero-sub" data-fr="Collez un lien d'annonce. En 20 minutes, votre bien a une page qui provoque l'émotion que SeLoger ne provoquera jamais." data-en="Paste a listing link. In 20 minutes, your property has a page that creates the emotion no portal ever will.">Collez un lien d'annonce. En 20 minutes, votre bien a une page qui provoque l'émotion que SeLoger ne provoquera jamais.</p>
-  <div class="hero-actions">
-    <button class="btn-primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})" data-fr="Rejoindre la liste d'attente" data-en="Join the waitlist">Rejoindre la liste d'attente</button>
-    <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})" data-fr="Voir comment ça marche →" data-en="See how it works →">Voir comment ça marche →</button>
-  </div>
+<!-- ═══ 1. DEMO VIDEO HERO (full screen → shrink + features) ═══ -->
+<div class="demo-scroll" id="demoScroll">
+  <div class="demo-sticky" id="demoSticky">
 
-  <div class="comparison-wrap">
-    <div class="comparison-labels">
-      <span class="lbl-before" data-fr="Annonce SeLoger classique" data-en="Standard SeLoger listing">Annonce SeLoger classique</span>
-      <span class="lbl-after" data-fr="Page OHOS générée" data-en="OHOS generated page">Page OHOS générée</span>
+    <!-- Left: text + features (hidden initially) -->
+    <div class="demo-text" id="demoText">
+      <span class="section-tag" data-fr="Démo" data-en="Demo">Démo</span>
+      <h2 data-fr="Voyez la <em>différence</em><br>en action." data-en="See the <em>difference</em><br>in action.">Voyez la <em>différence</em><br>en action.</h2>
+      <p data-fr="Chaque bien mérite sa propre vitrine. OHOS génère un site élégant en quelques clics — vidéo, IA, prise de RDV intégrée." data-en="Every property deserves its own showcase. OHOS generates an elegant site in a few clicks — video, AI, integrated booking.">Chaque bien mérite sa propre vitrine. OHOS génère un site élégant en quelques clics — vidéo, IA, prise de RDV intégrée.</p>
+      <div class="demo-features">
+        <div class="demo-feat"><div class="demo-feat-label"><span class="demo-feat-icon">🎬</span><span data-fr="Vidéo hero plein écran" data-en="Full-screen hero video">Vidéo hero plein écran</span></div><div class="demo-feat-desc" data-fr="Votre vidéo drone tourne en boucle dès l'ouverture. L'acheteur est immergé avant même de scroller." data-en="Your drone video loops from the start. The buyer is immersed before they even scroll.">Votre vidéo drone tourne en boucle dès l'ouverture. L'acheteur est immergé avant même de scroller.</div></div>
+        <div class="demo-feat"><div class="demo-feat-label"><span class="demo-feat-icon">✦</span><span data-fr="Slider avant / après IA" data-en="AI before / after slider">Slider avant / après IA</span></div><div class="demo-feat-desc" data-fr="L'acheteur glisse et voit la rénovation projetée par intelligence artificielle." data-en="The buyer slides and sees the AI-projected renovation.">L'acheteur glisse et voit la rénovation projetée par intelligence artificielle.</div></div>
+        <div class="demo-feat"><div class="demo-feat-label"><span class="demo-feat-icon">📅</span><span data-fr="Calendly intégré" data-en="Integrated Calendly">Calendly intégré</span></div><div class="demo-feat-desc" data-fr="Les acheteurs sérieux prennent RDV directement. Zéro aller-retour." data-en="Serious buyers book directly. Zero back-and-forth.">Les acheteurs sérieux prennent RDV directement. Zéro aller-retour.</div></div>
+        <div class="demo-feat"><div class="demo-feat-label"><span class="demo-feat-icon">📊</span><span data-fr="Capture de leads" data-en="Lead capture">Capture de leads</span></div><div class="demo-feat-desc" data-fr="Chaque visite est trackée. Vous savez qui regarde, quand, combien de temps." data-en="Every visit is tracked. You know who's looking, when, for how long.">Chaque visite est trackée. Vous savez qui regarde, quand, combien de temps.</div></div>
+        <div class="demo-feat"><div class="demo-feat-label"><span class="demo-feat-icon">📐</span><span data-fr="Plans téléchargeables" data-en="Downloadable plans">Plans téléchargeables</span></div><div class="demo-feat-desc" data-fr="Plans, DPE, diagnostics disponibles en un clic. Les acheteurs ont tout avant d'appeler." data-en="Plans, energy ratings, diagnostics in one click. Buyers have everything before calling.">Plans, DPE, diagnostics disponibles en un clic. Les acheteurs ont tout avant d'appeler.</div></div>
+        <div class="demo-feat"><div class="demo-feat-label"><span class="demo-feat-icon">👤</span><span data-fr="Profil agent" data-en="Agent profile">Profil agent</span></div><div class="demo-feat-desc" data-fr="Votre photo, coordonnées, réseaux sociaux. Chaque bien renforce votre personal branding." data-en="Your photo, contact info, social networks. Every property strengthens your personal brand.">Votre photo, coordonnées, réseaux sociaux. Chaque bien renforce votre personal branding.</div></div>
+        <div class="demo-feat"><div class="demo-feat-label"><span class="demo-feat-icon">📊</span><span data-fr="Dashboard & analytics" data-en="Dashboard & analytics">Dashboard & analytics</span></div><div class="demo-feat-desc" data-fr="Tous vos biens dans un seul endroit. Suivez visites, clics, demandes. Vos données." data-en="All your properties in one place. Track visits, clicks, requests. Your data.">Tous vos biens dans un seul endroit. Suivez visites, clics, demandes. Vos données.</div></div>
+        <div class="demo-feat"><div class="demo-feat-label"><span class="demo-feat-icon">🌐</span><span data-fr="Domaine personnalisé" data-en="Custom domain">Domaine personnalisé</span></div><div class="demo-feat-desc" data-fr="Ajoutez votre propre nom de domaine. Chaque page vit sous votre marque." data-en="Add your own domain name. Every page lives under your brand.">Ajoutez votre propre nom de domaine. Chaque page vit sous votre marque.</div></div>
+      </div>
     </div>
-    <div class="drag-slider" id="dragSlider">
 
-      <!-- AFTER -->
-      <div class="ds-after">
-        <div class="mock-ohos">
-          <div class="oh-bg"></div>
-          <div class="oh-img"><div class="oh-img-inner"></div></div>
-          <div class="oh-body">
-            <div class="oh-tag">Villa · Cap d'Antibes · 06</div>
-            <div class="oh-title">Villa des Oliviers<br>Vue mer · À rénover</div>
-            <div class="oh-price">895 000 €</div>
-            <div class="oh-stats">
-              <div class="oh-stat"><div class="oh-dot"></div>180 m²</div>
-              <div class="oh-stat"><div class="oh-dot"></div>5 pièces</div>
-              <div class="oh-stat"><div class="oh-dot"></div>Terrain 800 m²</div>
-            </div>
-            <div class="oh-btns">
-              <div class="oh-btn">Prendre RDV</div>
-              <div class="oh-btn-g">Voir les plans</div>
-              <div class="oh-btn-g">Avant / Après IA</div>
-            </div>
-          </div>
-        </div>
+    <!-- Right: video (starts full screen) -->
+    <div class="demo-video-wrap" id="demoVideoWrap">
+      <div class="demo-video-tag" data-fr="✦ Démo OHOS" data-en="✦ OHOS Demo">✦ Démo OHOS</div>
+      <video id="demoVideo" src="demo-ohos.mp4" muted playsinline preload="metadata" poster=""></video>
+      <div class="demo-video-overlay" id="demoOverlay">
+        <div class="demo-play-btn" aria-label="Play"></div>
       </div>
-
-      <!-- BEFORE -->
-      <div class="ds-before" id="dsBefore">
-        <div class="ds-before-inner">
-          <div class="mock-sl">
-            <div class="sl-top">
-              <div class="sl-brand">SeLoger</div>
-              <div class="sl-crumb">Ventes › Alpes-Maritimes › Antibes › Maison</div>
-            </div>
-            <div class="sl-body">
-              <div class="sl-imgzone">
-                <div style="width:100%;height:100%;background:linear-gradient(135deg,#b0bec5,#78909c);"></div>
-                <div class="sl-photocnt">1/12 ▸</div>
-              </div>
-              <div class="sl-details">
-                <div class="sl-price">895 000 €</div>
-                <div class="sl-ttl">Maison 5 pièces · 180 m²</div>
-                <div class="sl-chips"><div class="sl-chip">5 pièces</div><div class="sl-chip">180 m²</div><div class="sl-chip">DPE D</div></div>
-                <div class="sl-chips"><div class="sl-chip">4 chambres</div><div class="sl-chip">Terrain 800m²</div></div>
-                <div class="sl-desc">Belle villa avec vue dégagée, terrain de 800m², proche commodités. Possibilité de rénovation. À saisir rapidement...</div>
-                <div class="sl-cta">Contacter l'agence</div>
-              </div>
-            </div>
-            <div class="sl-foot"><span>Réf. IMM-48392 · 04/03/2026</span><span>Agence Martin Immobilier</span></div>
-          </div>
-        </div>
+      <div class="demo-video-controls" id="demoControls">
+        <button class="vc-btn" id="vcPlayPause" aria-label="Play/Pause">
+          <svg id="vcIconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="vcIconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>
+        </button>
+        <div class="vc-progress" id="vcProgress"><div class="vc-progress-bar" id="vcBar"></div></div>
+        <span class="vc-time" id="vcTime">0:00</span>
       </div>
+    </div>
 
-      <div class="ds-handle" id="dsHandle"></div>
+    <!-- Scroll indicator -->
+    <div class="scroll-hint" id="scrollHint">
+      <div class="scroll-hint-pill">
+        <span data-fr="Scrollez" data-en="Scroll">Scrollez</span>
+        <div class="scroll-hint-arrow"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ 2. SCROLL TEXT: Un bien / Une page / Un coup de cœur ═══ -->
+<div class="scroll-hero" id="scrollHero">
+  <div class="scroll-hero-sticky" id="scrollSticky">
+    <div class="scroll-word" id="sw1" data-fr="Un bien." data-en="One home.">Un bien.</div>
+    <div class="scroll-word" id="sw2" data-fr="<em>Une page.</em>" data-en="<em>One site.</em>"><em>Une page.</em></div>
+    <div class="scroll-word" id="sw3" data-fr="Un coup de cœur." data-en="One emotion.">Un coup de cœur.</div>
+    <div class="scroll-cta" id="scrollCta">
+      <div class="hero-tag" data-fr="Bientôt disponible · Accès anticipé" data-en="Coming soon · Early access">Bientôt disponible · Accès anticipé</div>
+      <p class="hero-sub" data-fr="Collez un lien d'annonce. En 20 minutes, votre bien a une page qui provoque l'émotion que SeLoger ne provoquera jamais." data-en="Paste a listing link. In 20 minutes, your property has a page that creates the emotion no portal ever will.">Collez un lien d'annonce. En 20 minutes, votre bien a une page qui provoque l'émotion que SeLoger ne provoquera jamais.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})" data-fr="Rejoindre la liste d'attente" data-en="Join the waitlist">Rejoindre la liste d'attente</button>
+        <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})" data-fr="Voir comment ça marche →" data-en="See how it works →">Voir comment ça marche →</button>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
+<!-- ═══ 4. PROBLEM ═══ -->
 <section class="problem" id="problem">
   <div class="problem-inner">
     <div class="reveal">
@@ -275,6 +391,7 @@
   </div>
 </section>
 
+<!-- ═══ 5. HOW IT WORKS ═══ -->
 <section class="how" id="how">
   <div class="how-inner">
     <div class="reveal" style="max-width:580px;">
@@ -290,23 +407,59 @@
   </div>
 </section>
 
-<section class="features" id="features">
-  <div class="features-inner">
-    <div class="reveal" style="max-width:560px;margin-bottom:56px;">
-      <span class="section-tag" data-fr="Fonctionnalités" data-en="Features">Fonctionnalités</span>
-      <h2 data-fr="Tout ce qu'il faut<br>pour <em>vendre mieux.</em>" data-en="Everything you need<br>to <em>sell better.</em>">Tout ce qu'il faut<br>pour <em>vendre mieux.</em></h2>
+<!-- ═══ AVANT / APRÈS ═══ -->
+<section class="hero-cta" id="demo">
+  <div class="hero-glow"></div>
+
+  <div class="comparison-wrap">
+    <div class="comparison-title">
+      <span class="section-tag" data-fr="Avant / Après" data-en="Before / After">Avant / Après</span>
+      <h2 data-fr="La même annonce.<br><em>Deux expériences.</em>" data-en="The same listing.<br><em>Two experiences.</em>">La même annonce.<br><em>Deux expériences.</em></h2>
+      <p data-fr="Glissez pour comparer une fiche SeLoger classique avec une page OHOS." data-en="Slide to compare a standard SeLoger listing with an OHOS page.">Glissez pour comparer une fiche SeLoger classique avec une page OHOS.</p>
     </div>
-    <div class="feat-grid reveal">
-      <div class="feat"><span class="feat-icon">🎬</span><h3 data-fr="Vidéo en héros" data-en="Hero video">Vidéo en héros</h3><p data-fr="Votre vidéo drone tourne en boucle. Le bien se dévoile avant même que l'acheteur scrolle." data-en="Your drone video loops at the top. The property reveals itself before the buyer even scrolls.">Votre vidéo drone tourne en boucle. Le bien se dévoile avant même que l'acheteur scrolle.</p></div>
-      <div class="feat"><span class="feat-icon">✦</span><h3 data-fr="Slider avant/après IA" data-en="AI before/after slider">Slider avant/après IA</h3><p data-fr="L'IA génère une projection rénovée. L'acheteur voit le potentiel, pas seulement l'état actuel." data-en="AI generates a renovated projection. The buyer sees potential, not just the current state.">L'IA génère une projection rénovée. L'acheteur voit le potentiel, pas seulement l'état actuel.</p></div>
-      <div class="feat"><span class="feat-icon">📅</span><h3 data-fr="Prise de RDV intégrée" data-en="Integrated booking">Prise de RDV intégrée</h3><p data-fr="Votre Calendly directement sur la page. Les acheteurs sérieux bookent seuls, sans aller-retour." data-en="Your Calendly directly on the page. Serious buyers book themselves, no back-and-forth.">Votre Calendly directement sur la page. Les acheteurs sérieux bookent seuls, sans aller-retour.</p></div>
-      <div class="feat"><span class="feat-icon">📐</span><h3 data-fr="Plans téléchargeables" data-en="Downloadable plans">Plans téléchargeables</h3><p data-fr="Plans, DPE, diagnostics disponibles en un clic. Les acheteurs ont tout avant d'appeler." data-en="Plans, energy ratings, diagnostics in one click. Buyers have everything before calling.">Plans, DPE, diagnostics disponibles en un clic. Les acheteurs ont tout avant d'appeler.</p></div>
-      <div class="feat"><span class="feat-icon">👤</span><h3 data-fr="Profil agent" data-en="Agent profile">Profil agent</h3><p data-fr="Votre photo, coordonnées, réseaux sociaux. Chaque bien renforce votre personal branding." data-en="Your photo, contact info, social networks. Every property strengthens your personal brand.">Votre photo, coordonnées, réseaux sociaux. Chaque bien renforce votre personal branding.</p></div>
-      <div class="feat"><span class="feat-icon">📊</span><h3 data-fr="Dashboard & leads" data-en="Dashboard & leads">Dashboard & leads</h3><p data-fr="Tous vos biens dans un seul endroit. Suivez visites, clics, demandes. Vos données." data-en="All your properties in one place. Track visits, clicks, requests. Your data.">Tous vos biens dans un seul endroit. Suivez visites, clics, demandes. Vos données.</p></div>
+    <div class="comparison-labels">
+      <span class="lbl-before" data-fr="Annonce SeLoger classique" data-en="Standard SeLoger listing">Annonce SeLoger classique</span>
+      <span class="lbl-after" data-fr="Page OHOS générée" data-en="OHOS generated page">Page OHOS générée</span>
+    </div>
+    <div class="drag-slider" id="dragSlider">
+      <div class="ds-after">
+        <div class="mock-ohos">
+          <div class="oh-nav">
+            <div class="oh-nav-logo">IAD FRANCE</div>
+            <div class="oh-nav-links"><span class="oh-nav-link">Accueil</span><span class="oh-nav-link">Propriété</span><span class="oh-nav-link">Localisation</span><span class="oh-nav-link">Contact</span></div>
+            <div class="oh-nav-btns"><div class="oh-nav-btn">Contacter</div></div>
+          </div>
+          <div class="oh-dots"><div class="oh-dot-item active"></div><div class="oh-dot-item"></div><div class="oh-dot-item"></div><div class="oh-dot-item"></div><div class="oh-dot-item"></div><div class="oh-dot-item"></div></div>
+          <div class="oh-content">
+            <div><div class="oh-title">Villa<br>Ponteil</div><div class="oh-loc">Cap d'Antibes, Ponteil — 06600</div></div>
+            <div class="oh-right"><div class="oh-price">1 470 000 €</div><div class="oh-ref">Réf. 250779727</div></div>
+          </div>
+          <div class="oh-play"></div>
+        </div>
+      </div>
+      <div class="ds-before" id="dsBefore">
+          <div class="mock-sl">
+            <div class="sl-top"><div class="sl-brand">SeLoger</div><div class="sl-crumb">Ventes › Alpes-Maritimes › Antibes › Maison</div></div>
+            <div class="sl-body">
+              <div class="sl-imgzone"><div class="sl-photocnt">1/12 ▸</div></div>
+              <div class="sl-details">
+                <div class="sl-price">1 470 000 €</div>
+                <div class="sl-ttl">Maison 7 pièces · 250 m²</div>
+                <div class="sl-chips"><div class="sl-chip">7 pièces</div><div class="sl-chip">250 m²</div><div class="sl-chip">DPE C</div></div>
+                <div class="sl-chips"><div class="sl-chip">5 chambres</div><div class="sl-chip">Terrain 1200m²</div></div>
+                <div class="sl-desc">Belle villa avec vue mer, terrain arboré de 1200m², piscine. Proche plage et commodités...</div>
+                <div class="sl-cta">Contacter l'agence</div>
+              </div>
+            </div>
+            <div class="sl-foot"><span>Réf. 250779727 · 04/03/2026</span><span>IAD France - Agent</span></div>
+          </div>
+      </div>
+      <div class="ds-handle" id="dsHandle"></div>
     </div>
   </div>
 </section>
 
+<!-- ═══ 6. WAITLIST ═══ -->
 <section class="waitlist" id="waitlist">
   <div class="waitlist-inner reveal">
     <span class="section-tag" data-fr="Accès anticipé" data-en="Early access">Accès anticipé</span>
@@ -318,28 +471,68 @@
     </div>
     <p class="wl-note" data-fr="Aucun engagement. Aucune carte bancaire." data-en="No commitment. No credit card.">Aucun engagement. Aucune carte bancaire.</p>
     <div class="wl-social">
-      <div class="avatars"><div class="av av1">L</div><div class="av av2">M</div><div class="av av3">S</div><div class="av av4">A</div></div>
+      <div class="avatars"><img class="av" src="https://randomuser.me/api/portraits/women/44.jpg" alt=""><img class="av" src="https://randomuser.me/api/portraits/men/32.jpg" alt=""><img class="av" src="https://randomuser.me/api/portraits/women/68.jpg" alt=""><img class="av" src="https://randomuser.me/api/portraits/men/75.jpg" alt=""></div>
       <span id="wlCount" data-fr="47 agents déjà sur la liste" data-en="47 agents already on the list">47 agents déjà sur la liste</span>
     </div>
   </div>
 </section>
 
+<!-- ═══ 7. FAQ ═══ -->
+<section class="faq" id="faq">
+  <div class="faq-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:56px;">
+      <span class="section-tag" data-fr="FAQ" data-en="FAQ">FAQ</span>
+      <h2 data-fr="Questions<br><em>fréquentes.</em>" data-en="Frequently<br><em>asked.</em>">Questions<br><em>fréquentes.</em></h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q" data-fr="C'est quoi OHOS exactement ?" data-en="What is OHOS exactly?">C'est quoi OHOS exactement ?</div>
+        <div class="faq-a"><p data-fr="OHOS (One Home, One Site) transforme n'importe quelle annonce immobilière en une page dédiée, élégante et interactive. Vous collez le lien de votre annonce, et en 20 minutes vous avez un mini-site qui vend mieux qu'une fiche portail." data-en="OHOS (One Home, One Site) transforms any property listing into a dedicated, elegant, and interactive page. You paste your listing link, and in 20 minutes you have a mini-site that sells better than a portal listing.">OHOS (One Home, One Site) transforme n'importe quelle annonce immobilière en une page dédiée, élégante et interactive. Vous collez le lien de votre annonce, et en 20 minutes vous avez un mini-site qui vend mieux qu'une fiche portail.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-fr="Combien ça va coûter ?" data-en="How much will it cost?">Combien ça va coûter ?</div>
+        <div class="faq-a"><p data-fr="Le pricing sera annoncé au lancement. Les agents inscrits sur la liste d'attente bénéficieront de conditions préférentielles et d'un accès prioritaire." data-en="Pricing will be announced at launch. Waitlisted agents will benefit from preferred pricing and priority access.">Le pricing sera annoncé au lancement. Les agents inscrits sur la liste d'attente bénéficieront de conditions préférentielles et d'un accès prioritaire.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-fr="Faut-il des compétences techniques ?" data-en="Do I need technical skills?">Faut-il des compétences techniques ?</div>
+        <div class="faq-a"><p data-fr="Aucune. Si vous savez copier-coller un lien, vous savez utiliser OHOS. L'hébergement, le domaine, les mises à jour — tout est géré pour vous." data-en="None at all. If you can copy-paste a link, you can use OHOS. Hosting, domain, updates — everything is managed for you.">Aucune. Si vous savez copier-coller un lien, vous savez utiliser OHOS. L'hébergement, le domaine, les mises à jour — tout est géré pour vous.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-fr="Ça marche avec tous les portails ?" data-en="Does it work with all listing portals?">Ça marche avec tous les portails ?</div>
+        <div class="faq-a"><p data-fr="Au lancement, OHOS supporte SeLoger et BienIci. D'autres portails seront ajoutés rapidement. Vous pouvez aussi entrer les infos manuellement." data-en="At launch, OHOS supports SeLoger and BienIci. More portals will be added quickly. You can also enter info manually.">Au lancement, OHOS supporte SeLoger et BienIci. D'autres portails seront ajoutés rapidement. Vous pouvez aussi entrer les infos manuellement.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-fr="Mes données sont-elles protégées ?" data-en="Is my data protected?">Mes données sont-elles protégées ?</div>
+        <div class="faq-a"><p data-fr="Oui. Vos données restent les vôtres. OHOS est hébergé en Europe et conforme au RGPD. Aucune donnée n'est revendue à des tiers." data-en="Yes. Your data remains yours. OHOS is hosted in Europe and GDPR compliant. No data is resold to third parties.">Oui. Vos données restent les vôtres. OHOS est hébergé en Europe et conforme au RGPD. Aucune donnée n'est revendue à des tiers.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-fr="Puis-je utiliser mon propre domaine ?" data-en="Can I use my own domain?">Puis-je utiliser mon propre domaine ?</div>
+        <div class="faq-a"><p data-fr="Absolument. Chaque page peut être accessible sous votre propre nom de domaine. Vos biens, votre marque, votre URL." data-en="Absolutely. Every page can be accessible under your own domain name. Your properties, your brand, your URL.">Absolument. Chaque page peut être accessible sous votre propre nom de domaine. Vos biens, votre marque, votre URL.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
 <footer>
-  <div class="footer-logo">OH<span>OS</span></div>
+  <div class="footer-logo"><img src="logo-ohos.png" alt="OHOS"></div>
   <p>One Home, One Site · © 2026</p>
-  <p>luca@oh-os.agency</p>
+  <p><a href="mailto:hello@oh-os.agency" style="color:var(--cream-dim);opacity:0.4;text-decoration:none;">hello@oh-os.agency</a></p>
 </footer>
 
 <script>
-// DRAG SLIDER
+// ── HELPER ──
+function lerp(a,b,t){ return a + (b - a) * t; }
+function ease(t){ return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2; }
+
+// ── DRAG SLIDER ──
 const slider = document.getElementById('dragSlider');
 const before = document.getElementById('dsBefore');
 const handle = document.getElementById('dsHandle');
 let dragging = false;
-
 function setPos(pct) {
   pct = Math.max(0, Math.min(100, pct));
-  before.style.width = pct + '%';
+  before.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
   handle.style.left = pct + '%';
 }
 function getPct(e) {
@@ -349,19 +542,202 @@ function getPct(e) {
 }
 slider.addEventListener('mousedown', e => { dragging = true; setPos(getPct(e)); e.preventDefault(); });
 slider.addEventListener('touchstart', e => { dragging = true; setPos(getPct(e)); }, {passive:true});
-window.addEventListener('mousemove', e => { if (dragging) setPos(getPct(e)); });
-window.addEventListener('touchmove', e => { if (dragging) setPos(getPct(e)); }, {passive:true});
+window.addEventListener('mousemove', e => { if(dragging) setPos(getPct(e)); });
+window.addEventListener('touchmove', e => { if(dragging) setPos(getPct(e)); }, {passive:true});
 window.addEventListener('mouseup', () => dragging = false);
 window.addEventListener('touchend', () => dragging = false);
 
-// SCROLL REVEAL
+// ── SCROLL REVEAL ──
 const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:0.1});
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-// WAITLIST
+// ── DEMO SCROLL: video full → shrink + text reveal ──
+(function(){
+  const wrap = document.getElementById('demoScroll');
+  const sticky = document.getElementById('demoSticky');
+  const text = document.getElementById('demoText');
+  const vid = document.getElementById('demoVideoWrap');
+  const tag = vid ? vid.querySelector('.demo-video-tag') : null;
+  if(!wrap || !text || !vid) return;
+
+  function updateDemo(){
+    const rect = wrap.getBoundingClientRect();
+    const scrollH = wrap.offsetHeight - window.innerHeight;
+    if(scrollH <= 0) return;
+    const raw = Math.max(0, Math.min(1, -rect.top / scrollH));
+    const p = ease(raw);
+
+    const vw = sticky.offsetWidth;
+    const vh = sticky.offsetHeight;
+
+    // Video: full screen → right column, preserving 16:9 aspect ratio
+    var targetW = vw * 0.45;
+    var targetH = targetW * 9 / 16; // preserve 16:9 ratio
+    var targetTop = (vh - targetH) / 2; // vertically center
+    vid.style.top = lerp(0, targetTop, p) + 'px';
+    vid.style.left = lerp(0, vw * 0.52, p) + 'px';
+    vid.style.width = lerp(vw, targetW, p) + 'px';
+    vid.style.height = lerp(vh, targetH, p) + 'px';
+    vid.style.borderRadius = lerp(0, 16, p) + 'px';
+
+    // Tag: show when video has shrunk
+    if(tag) tag.style.opacity = p > 0.6 ? (p - 0.6) / 0.4 : 0;
+
+    // Hide scroll hint as soon as user starts scrolling
+    var hint = document.getElementById('scrollHint');
+    if(hint) hint.style.opacity = p > 0.05 ? 0 : 0.6;
+
+    // Text: slide in from left
+    text.style.opacity = p;
+    text.style.transform = 'translate(' + lerp(-80, 0, p) + 'px, -50%)';
+  }
+
+  window.addEventListener('scroll', updateDemo, {passive:true});
+  window.addEventListener('resize', updateDemo);
+  updateDemo();
+})();
+
+// ── SCROLL TEXT: Un bien / une page / un coup de cœur ──
+(function(){
+  const wrap = document.getElementById('scrollHero');
+  const words = [document.getElementById('sw1'), document.getElementById('sw2'), document.getElementById('sw3')];
+  const scrollCta = document.getElementById('scrollCta');
+  if(!wrap || !words[0]) return;
+
+  const dirs = ['left', 'right', 'left']; // slide directions
+
+  function updateScrollText(){
+    const rect = wrap.getBoundingClientRect();
+    const scrollH = wrap.offsetHeight - window.innerHeight;
+    if(scrollH <= 0) return;
+    const raw = Math.max(0, Math.min(1, -rect.top / scrollH));
+
+    // Words take the first 70% of scroll, CTA animates in the last 30%
+    const wordEnd = 0.7;
+
+    words.forEach((w, i) => {
+      const start = i * (wordEnd / 3);
+      const end = (i + 1) * (wordEnd / 3);
+      const localP = Math.max(0, Math.min(1, (raw - start) / (end - start)));
+      const p = ease(localP);
+
+      // Offset: push completed words upward as new ones arrive
+      const completedAfter = Math.max(0, raw - end) / (wordEnd - end || 1);
+      const yShift = -completedAfter * 30;
+
+      const xDir = dirs[i] === 'left' ? -1 : 1;
+      const xShift = lerp(120 * xDir, 0, p);
+
+      w.style.opacity = p;
+      w.style.transform = 'translate(' + xShift + 'px, ' + yShift + 'px)';
+    });
+
+    // CTA animation: slides up and fades in after all 3 words are visible
+    if(scrollCta) {
+      const ctaStart = 0.72;
+      const ctaEnd = 0.95;
+      const ctaP = ease(Math.max(0, Math.min(1, (raw - ctaStart) / (ctaEnd - ctaStart))));
+      const ctaY = lerp(60, 0, ctaP);
+      scrollCta.style.opacity = ctaP;
+      scrollCta.style.transform = 'translateY(' + ctaY + 'px)';
+      if(ctaP > 0.5) scrollCta.classList.add('active');
+      else scrollCta.classList.remove('active');
+    }
+  }
+
+  window.addEventListener('scroll', updateScrollText, {passive:true});
+  updateScrollText();
+})();
+
+// ── VIDEO CONTROLS ──
+(function(){
+  const video = document.getElementById('demoVideo');
+  const overlay = document.getElementById('demoOverlay');
+  const vcPlayPause = document.getElementById('vcPlayPause');
+  const vcIconPlay = document.getElementById('vcIconPlay');
+  const vcIconPause = document.getElementById('vcIconPause');
+  const vcProgress = document.getElementById('vcProgress');
+  const vcBar = document.getElementById('vcBar');
+  const vcTime = document.getElementById('vcTime');
+  if(!video) return;
+
+  function fmtTime(s){ const m=Math.floor(s/60); const sec=Math.floor(s%60); return m+':'+(sec<10?'0':'')+sec; }
+  function syncIcons(){ const playing=!video.paused&&!video.ended; vcIconPlay.style.display=playing?'none':''; vcIconPause.style.display=playing?'':'none'; }
+
+  overlay.addEventListener('click', () => { overlay.classList.add('hidden'); video.play(); });
+  vcPlayPause.addEventListener('click', () => {
+    if(video.paused||video.ended){ overlay.classList.add('hidden'); video.play(); } else { video.pause(); }
+  });
+  video.addEventListener('timeupdate', () => {
+    if(!video.duration) return;
+    vcBar.style.width = (video.currentTime/video.duration*100)+'%';
+    vcTime.textContent = fmtTime(video.currentTime);
+  });
+  video.addEventListener('play', syncIcons);
+  video.addEventListener('pause', syncIcons);
+
+  let seeking = false;
+  function seek(e){ const r=vcProgress.getBoundingClientRect(); const pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); if(video.duration) video.currentTime=pct*video.duration; }
+  vcProgress.addEventListener('mousedown', e => { seeking=true; seek(e); e.preventDefault(); });
+  window.addEventListener('mousemove', e => { if(seeking) seek(e); });
+  window.addEventListener('mouseup', () => seeking=false);
+
+  video.addEventListener('ended', () => { overlay.classList.remove('hidden'); video.currentTime=0; syncIcons(); });
+})();
+
+// ── THEME TOGGLE (circular clip-path animation via View Transitions API) ──
+(function(){
+  const btn = document.getElementById('themeToggle');
+  btn.addEventListener('click', function() {
+    const html = document.documentElement;
+    const applyTheme = () => {
+      const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+      html.dataset.theme = next;
+      localStorage.setItem('ohos-theme', next);
+    };
+
+    // Fallback for browsers without View Transitions API
+    if (typeof document.startViewTransition !== 'function') {
+      applyTheme();
+      return;
+    }
+
+    // Calculate circle origin from button center
+    const rect = btn.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const maxRadius = Math.hypot(Math.max(x, vw - x), Math.max(y, vh - y));
+
+    const transition = document.startViewTransition(applyTheme);
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: ['circle(0px at '+x+'px '+y+'px)', 'circle('+maxRadius+'px at '+x+'px '+y+'px)'] },
+        { duration: 500, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)', fill: 'forwards' }
+      );
+    });
+  });
+})();
+// Restore saved theme
+(function(){ const saved = localStorage.getItem('ohos-theme'); if(saved) document.documentElement.dataset.theme = saved; })();
+
+// ── FAQ TOGGLES ──
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    // Toggle current
+    if(!wasOpen) item.classList.add('open');
+  });
+});
+
+// ── WAITLIST ──
 document.getElementById('wlBtn').addEventListener('click', () => {
   const inp = document.getElementById('wlInput');
-  if (inp.value.includes('@')) {
+  if(inp.value.includes('@')){
     const l = document.documentElement.dataset.lang;
     inp.value = '';
     inp.placeholder = l === 'fr' ? '✓ Vous êtes sur la liste !' : "✓ You're on the list!";
@@ -372,16 +748,16 @@ document.getElementById('wlBtn').addEventListener('click', () => {
   }
 });
 
-// LANGUAGE
-function setLang(lang) {
+// ── LANGUAGE ──
+function setLang(lang){
   document.documentElement.dataset.lang = lang;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  document.querySelector('.lang-btn[onclick="setLang(\''+lang+'\')"]').classList.add('active');
   document.querySelectorAll('[data-fr][data-en]').forEach(el => {
-    if (el.tagName === 'INPUT') return;
+    if(el.tagName === 'INPUT') return;
     const val = el.dataset[lang];
-    if (!val) return;
-    if (val.includes('<')) el.innerHTML = val;
+    if(!val) return;
+    if(val.includes('<')) el.innerHTML = val;
     else el.textContent = val;
   });
 }
