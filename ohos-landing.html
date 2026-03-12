@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OHOS — One Home, One Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0A0A0B; --bg2: #111114; --bg3: #161619;
+    --cream: #F2EDE4; --cream-dim: rgba(242,237,228,0.55);
+    --gold: #C8A96E; --gold-dim: rgba(200,169,110,0.15);
+    --border: rgba(242,237,228,0.08); --border-gold: rgba(200,169,110,0.25);
+  }
+  html { scroll-behavior: smooth; }
+  body { background:var(--bg); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:300; overflow-x:hidden; }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:9999; opacity:0.4;
+  }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 48px; border-bottom:1px solid var(--border);
+    backdrop-filter:blur(20px); background:rgba(10,10,11,0.75);
+  }
+  .logo { font-family:'Instrument Serif',serif; font-size:22px; letter-spacing:0.08em; }
+  .logo span { color:var(--gold); }
+  nav ul { list-style:none; display:flex; gap:32px; align-items:center; }
+  nav ul a { text-decoration:none; color:var(--cream-dim); font-size:13px; letter-spacing:0.03em; transition:color 0.2s; }
+  nav ul a:hover { color:var(--cream); }
+  .nav-cta { background:var(--cream)!important; color:var(--bg)!important; padding:8px 18px!important; border-radius:4px; font-weight:500!important; }
+  .lang-switch { display:flex; gap:4px; }
+  .lang-btn { background:none; border:1px solid transparent; border-radius:6px; padding:5px 9px; font-size:17px; cursor:pointer; opacity:0.35; transition:all 0.2s; }
+  .lang-btn:hover { opacity:0.7; }
+  .lang-btn.active { opacity:1; border-color:var(--border-gold); background:var(--gold-dim); }
+
+  /* HERO */
+  .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:140px 48px 80px; position:relative; overflow:hidden; }
+  .hero-glow { position:absolute; width:800px; height:500px; background:radial-gradient(ellipse,rgba(200,169,110,0.07) 0%,transparent 70%); top:20%; left:50%; transform:translateX(-50%); pointer-events:none; }
+  .hero-tag { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border-gold); background:var(--gold-dim); padding:6px 14px; border-radius:100px; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:36px; opacity:0; animation:fadeUp 0.7s 0.2s forwards; }
+  .hero-tag::before { content:''; width:6px; height:6px; background:var(--gold); border-radius:50%; animation:blink 2s infinite; }
+  h1 { font-family:'Instrument Serif',serif; font-size:clamp(52px,7vw,92px); font-weight:400; line-height:1.0; text-align:center; max-width:880px; margin-bottom:28px; opacity:0; animation:fadeUp 0.8s 0.4s forwards; }
+  h1 em { font-style:italic; color:var(--gold); }
+  .hero-sub { font-size:17px; color:var(--cream-dim); text-align:center; max-width:460px; line-height:1.65; margin-bottom:48px; opacity:0; animation:fadeUp 0.8s 0.6s forwards; }
+  .hero-actions { display:flex; gap:12px; margin-bottom:72px; opacity:0; animation:fadeUp 0.8s 0.8s forwards; }
+  .btn-primary { background:var(--cream); color:var(--bg); padding:13px 26px; border:none; border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:background 0.2s; }
+  .btn-primary:hover { background:var(--gold); }
+  .btn-ghost { background:transparent; color:var(--cream-dim); padding:13px 26px; border:1px solid var(--border); border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; cursor:pointer; transition:all 0.2s; }
+  .btn-ghost:hover { border-color:var(--border-gold); color:var(--cream); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* DRAG SLIDER */
+  .comparison-wrap { width:100%; max-width:1100px; opacity:0; animation:fadeUp 1s 1s forwards; }
+  .comparison-labels { display:flex; justify-content:space-between; margin-bottom:10px; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; }
+  .lbl-before { color:rgba(255,255,255,0.3); }
+  .lbl-after { color:var(--gold); }
+  .drag-slider { position:relative; width:100%; height:360px; border-radius:12px; overflow:hidden; border:1px solid var(--border); box-shadow:0 40px 100px rgba(0,0,0,0.6); cursor:col-resize; user-select:none; -webkit-user-select:none; }
+  .ds-after { position:absolute; inset:0; width:100%; height:100%; display:flex; }
+  .ds-before { position:absolute; top:0; left:0; bottom:0; overflow:hidden; width:50%; }
+  .ds-before-inner { position:absolute; top:0; left:0; bottom:0; width:100vw; max-width:1100px; }
+  .ds-handle { position:absolute; top:0; bottom:0; left:50%; width:2px; background:var(--gold); transform:translateX(-50%); z-index:20; pointer-events:none; }
+  .ds-handle::after { content:'↔'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:36px; height:36px; background:var(--bg); border:2px solid var(--gold); border-radius:50%; color:var(--gold); font-size:13px; line-height:34px; text-align:center; }
+
+  /* SeLoger mock */
+  .mock-sl { width:100%; height:100%; background:#f5f5f5; font-family:Arial,sans-serif; display:flex; flex-direction:column; }
+  .sl-top { background:#fff; padding:8px 14px; border-bottom:1px solid #ddd; display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .sl-brand { width:72px; height:16px; background:linear-gradient(90deg,#d32f2f,#e53935); border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:8px; color:#fff; font-weight:bold; }
+  .sl-crumb { font-size:8px; color:#aaa; }
+  .sl-body { display:flex; flex:1; overflow:hidden; min-height:0; }
+  .sl-imgzone { flex:1.4; min-width:0; background:linear-gradient(135deg,#b0bec5,#78909c); position:relative; }
+  .sl-photocnt { position:absolute; bottom:8px; left:8px; background:rgba(0,0,0,0.5); color:#fff; font-size:8px; padding:3px 7px; border-radius:3px; }
+  .sl-details { width:220px; background:#fff; padding:12px; display:flex; flex-direction:column; gap:5px; flex-shrink:0; overflow:hidden; }
+  .sl-price { font-size:18px; font-weight:bold; color:#222; }
+  .sl-ttl { font-size:9px; color:#444; font-weight:bold; }
+  .sl-chips { display:flex; gap:4px; flex-wrap:wrap; }
+  .sl-chip { background:#f0f0f0; border:1px solid #ddd; font-size:8px; color:#666; padding:2px 6px; border-radius:3px; }
+  .sl-desc { font-size:8px; color:#888; line-height:1.4; }
+  .sl-cta { background:#d32f2f; color:#fff; font-size:8px; font-weight:bold; text-align:center; padding:7px; margin-top:auto; flex-shrink:0; }
+  .sl-foot { background:#fff; padding:6px 14px; border-top:1px solid #ddd; font-size:8px; color:#bbb; display:flex; justify-content:space-between; flex-shrink:0; }
+
+  /* OHOS mock */
+  .mock-ohos { width:100%; height:100%; background:#0d0d10; position:relative; overflow:hidden; display:flex; flex-direction:column; }
+  .oh-bg { position:absolute; inset:0; background:linear-gradient(160deg,#1a1510 0%,#0d0d10 40%,#101018 100%); }
+  .oh-img { position:absolute; top:0; left:0; right:0; height:55%; overflow:hidden; }
+  .oh-img-inner { width:100%; height:100%; background:radial-gradient(ellipse at 30% 40%,rgba(200,169,110,0.22) 0%,transparent 55%),linear-gradient(135deg,#3d3028 0%,#2a2018 60%,#1a1510 100%); }
+  .oh-img::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 40%,#0d0d10 100%); }
+  .oh-body { position:relative; z-index:2; padding:0 18px 16px; margin-top:auto; display:flex; flex-direction:column; flex:1; justify-content:flex-end; }
+  .oh-tag { font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:#C8A96E; margin-bottom:5px; }
+  .oh-title { font-family:'Instrument Serif',serif; font-size:18px; color:#F2EDE4; line-height:1.2; margin-bottom:6px; }
+  .oh-price { font-size:15px; font-weight:500; color:#C8A96E; margin-bottom:8px; }
+  .oh-stats { display:flex; gap:10px; margin-bottom:12px; }
+  .oh-stat { font-size:8px; color:rgba(242,237,228,0.45); display:flex; align-items:center; gap:3px; }
+  .oh-dot { width:3px; height:3px; border-radius:50%; background:#C8A96E; }
+  .oh-btns { display:flex; gap:6px; }
+  .oh-btn { background:#C8A96E; color:#0d0d10; font-size:8px; font-weight:700; padding:6px 11px; border-radius:3px; white-space:nowrap; }
+  .oh-btn-g { background:transparent; border:1px solid rgba(242,237,228,0.15); color:rgba(242,237,228,0.55); font-size:8px; padding:6px 11px; border-radius:3px; white-space:nowrap; }
+
+  /* SECTIONS */
+  section { padding:110px 48px; }
+  .section-tag { font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:18px; display:block; }
+  h2 { font-family:'Instrument Serif',serif; font-size:clamp(36px,4vw,56px); font-weight:400; line-height:1.1; margin-bottom:18px; }
+  h2 em { font-style:italic; color:var(--gold); }
+  .sec-sub { font-size:16px; color:var(--cream-dim); max-width:460px; line-height:1.7; margin-bottom:56px; }
+  .gold-line { width:36px; height:1px; background:var(--gold); margin:20px 0; }
+
+  .problem { background:var(--bg); }
+  .problem-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+  .templates-wrap { position:relative; padding-top:22px; }
+  .same-badge { position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:rgba(200,169,110,0.12); border:1px solid var(--border-gold); color:var(--gold); font-size:9px; letter-spacing:0.08em; padding:3px 12px; border-radius:100px; white-space:nowrap; }
+  .tmpl-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .tmpl-card { background:var(--bg3); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:transform 0.3s; }
+  .tmpl-card:hover { transform:translateY(-3px); }
+  .tmpl-img { height:80px; }
+  .tmpl-body { padding:10px; }
+  .tmpl-price { font-size:12px; font-weight:500; color:var(--cream); margin-bottom:4px; }
+  .tmpl-tags { display:flex; gap:4px; flex-wrap:wrap; }
+  .tmpl-tag { background:var(--bg2); border:1px solid var(--border); font-size:9px; color:var(--cream-dim); padding:2px 6px; border-radius:3px; }
+
+  .how { background:var(--bg2); }
+  .how-inner { max-width:1100px; margin:0 auto; }
+  .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:56px; }
+  .step { background:var(--bg3); padding:38px 32px; position:relative; border:1px solid var(--border); transition:border-color 0.3s; }
+  .step:hover { border-color:var(--border-gold); }
+  .step:first-child { border-radius:12px 0 0 12px; }
+  .step:last-child { border-radius:0 12px 12px 0; }
+  .step-num { font-family:'Instrument Serif',serif; font-size:68px; font-weight:400; color:rgba(200,169,110,0.1); position:absolute; top:14px; right:20px; line-height:1; }
+  .step-icon { width:42px; height:42px; background:var(--gold-dim); border:1px solid var(--border-gold); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:19px; margin-bottom:18px; }
+  .step h3 { font-family:'Instrument Serif',serif; font-size:21px; font-weight:400; margin-bottom:10px; }
+  .step p { font-size:14px; color:var(--cream-dim); line-height:1.65; }
+
+  .features { background:var(--bg); }
+  .features-inner { max-width:1100px; margin:0 auto; }
+  .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .feat { background:var(--bg); padding:34px 30px; transition:background 0.3s; }
+  .feat:hover { background:var(--bg3); }
+  .feat-icon { font-size:26px; margin-bottom:14px; display:block; }
+  .feat h3 { font-family:'Instrument Serif',serif; font-size:20px; font-weight:400; margin-bottom:8px; }
+  .feat p { font-size:13px; color:var(--cream-dim); line-height:1.6; }
+
+  .waitlist { background:var(--bg2); text-align:center; }
+  .waitlist-inner { max-width:560px; margin:0 auto; }
+  .waitlist p { font-size:16px; color:var(--cream-dim); line-height:1.65; margin-bottom:44px; }
+  .wl-form { display:flex; gap:10px; max-width:420px; margin:0 auto 16px; }
+  .wl-input { flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:4px; padding:13px 16px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+  .wl-input:focus { border-color:var(--border-gold); }
+  .wl-input::placeholder { color:rgba(242,237,228,0.22); }
+  .wl-note { font-size:12px; color:rgba(242,237,228,0.28); }
+  .wl-social { display:inline-flex; align-items:center; gap:10px; margin-top:28px; font-size:13px; color:var(--cream-dim); }
+  .avatars { display:flex; }
+  .av { width:26px; height:26px; border-radius:50%; border:2px solid var(--bg2); margin-left:-7px; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:500; }
+  .av:first-child { margin-left:0; }
+  .av1{background:#C8A96E;color:#0d0d10} .av2{background:#8B7355;color:#F2EDE4} .av3{background:#6B8B7A;color:#F2EDE4} .av4{background:#7A6B8B;color:#F2EDE4}
+
+  footer { border-top:1px solid var(--border); padding:28px 48px; display:flex; justify-content:space-between; align-items:center; }
+  .footer-logo { font-family:'Instrument Serif',serif; font-size:18px; letter-spacing:0.06em; }
+  .footer-logo span { color:var(--gold); }
+  footer p { font-size:12px; color:rgba(242,237,228,0.22); }
+
+  .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease,transform 0.7s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">OH<span>OS</span></div>
+  <ul>
+    <li><a href="#problem" data-fr="Le problème" data-en="The problem">Le problème</a></li>
+    <li><a href="#how" data-fr="Comment ça marche" data-en="How it works">Comment ça marche</a></li>
+    <li><a href="#features" data-fr="Fonctionnalités" data-en="Features">Fonctionnalités</a></li>
+    <li><a href="#waitlist" class="nav-cta" data-fr="Liste d'attente" data-en="Join waitlist">Liste d'attente</a></li>
+  </ul>
+  <div class="lang-switch">
+    <button class="lang-btn active" onclick="setLang('fr')" title="Français">🇫🇷</button>
+    <button class="lang-btn" onclick="setLang('en')" title="English">🇬🇧</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag" data-fr="Bientôt disponible · Accès anticipé" data-en="Coming soon · Early access">Bientôt disponible · Accès anticipé</div>
+  <h1 data-fr="Un bien.<br><em>Une page.</em><br>Un coup de cœur." data-en="One home.<br><em>One site.</em><br>One emotion.">Un bien.<br><em>Une page.</em><br>Un coup de cœur.</h1>
+  <p class="hero-sub" data-fr="Collez un lien d'annonce. En 20 minutes, votre bien a une page qui provoque l'émotion que SeLoger ne provoquera jamais." data-en="Paste a listing link. In 20 minutes, your property has a page that creates the emotion no portal ever will.">Collez un lien d'annonce. En 20 minutes, votre bien a une page qui provoque l'émotion que SeLoger ne provoquera jamais.</p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})" data-fr="Rejoindre la liste d'attente" data-en="Join the waitlist">Rejoindre la liste d'attente</button>
+    <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})" data-fr="Voir comment ça marche →" data-en="See how it works →">Voir comment ça marche →</button>
+  </div>
+
+  <div class="comparison-wrap">
+    <div class="comparison-labels">
+      <span class="lbl-before" data-fr="Annonce SeLoger classique" data-en="Standard SeLoger listing">Annonce SeLoger classique</span>
+      <span class="lbl-after" data-fr="Page OHOS générée" data-en="OHOS generated page">Page OHOS générée</span>
+    </div>
+    <div class="drag-slider" id="dragSlider">
+
+      <!-- AFTER -->
+      <div class="ds-after">
+        <div class="mock-ohos">
+          <div class="oh-bg"></div>
+          <div class="oh-img"><div class="oh-img-inner"></div></div>
+          <div class="oh-body">
+            <div class="oh-tag">Villa · Cap d'Antibes · 06</div>
+            <div class="oh-title">Villa des Oliviers<br>Vue mer · À rénover</div>
+            <div class="oh-price">895 000 €</div>
+            <div class="oh-stats">
+              <div class="oh-stat"><div class="oh-dot"></div>180 m²</div>
+              <div class="oh-stat"><div class="oh-dot"></div>5 pièces</div>
+              <div class="oh-stat"><div class="oh-dot"></div>Terrain 800 m²</div>
+            </div>
+            <div class="oh-btns">
+              <div class="oh-btn">Prendre RDV</div>
+              <div class="oh-btn-g">Voir les plans</div>
+              <div class="oh-btn-g">Avant / Après IA</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEFORE -->
+      <div class="ds-before" id="dsBefore">
+        <div class="ds-before-inner">
+          <div class="mock-sl">
+            <div class="sl-top">
+              <div class="sl-brand">SeLoger</div>
+              <div class="sl-crumb">Ventes › Alpes-Maritimes › Antibes › Maison</div>
+            </div>
+            <div class="sl-body">
+              <div class="sl-imgzone">
+                <div style="width:100%;height:100%;background:linear-gradient(135deg,#b0bec5,#78909c);"></div>
+                <div class="sl-photocnt">1/12 ▸</div>
+              </div>
+              <div class="sl-details">
+                <div class="sl-price">895 000 €</div>
+                <div class="sl-ttl">Maison 5 pièces · 180 m²</div>
+                <div class="sl-chips"><div class="sl-chip">5 pièces</div><div class="sl-chip">180 m²</div><div class="sl-chip">DPE D</div></div>
+                <div class="sl-chips"><div class="sl-chip">4 chambres</div><div class="sl-chip">Terrain 800m²</div></div>
+                <div class="sl-desc">Belle villa avec vue dégagée, terrain de 800m², proche commodités. Possibilité de rénovation. À saisir rapidement...</div>
+                <div class="sl-cta">Contacter l'agence</div>
+              </div>
+            </div>
+            <div class="sl-foot"><span>Réf. IMM-48392 · 04/03/2026</span><span>Agence Martin Immobilier</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-handle" id="dsHandle"></div>
+    </div>
+  </div>
+</section>
+
+<section class="problem" id="problem">
+  <div class="problem-inner">
+    <div class="reveal">
+      <span class="section-tag" data-fr="Le problème" data-en="The problem">Le problème</span>
+      <h2 data-fr="Un studio à 200k.<br>Une villa à <em>1 million.</em><br>Le même template." data-en="A studio at 200k.<br>A villa at <em>1 million.</em><br>The same template.">Un studio à 200k.<br>Une villa à <em>1 million.</em><br>Le même template.</h2>
+      <div class="gold-line"></div>
+      <p class="sec-sub" data-fr="Aujourd'hui une annonce c'est une grille de photos et une liste de caractéristiques. Le format ne change pas, peu importe le prix. L'émotion non plus." data-en="Today a listing is a grid of photos and a list of specs. The format never changes, no matter the price. Neither does the emotion.">Aujourd'hui une annonce c'est une grille de photos et une liste de caractéristiques. Le format ne change pas, peu importe le prix. L'émotion non plus.</p>
+      <p style="font-size:14px;color:var(--cream-dim);line-height:1.7;" data-fr="OHOS donne à chaque bien la présentation qu'il mérite — une page dédiée, pensée pour déclencher le coup de cœur avant même la visite." data-en="OHOS gives every property the presentation it deserves — a dedicated page built to create desire before the visit.">OHOS donne à chaque bien la présentation qu'il mérite — une page dédiée, pensée pour déclencher le coup de cœur avant même la visite.</p>
+    </div>
+    <div class="templates-wrap reveal">
+      <div class="same-badge" data-fr="MÊME TEMPLATE" data-en="SAME TEMPLATE">MÊME TEMPLATE</div>
+      <div class="tmpl-grid">
+        <div class="tmpl-card"><div class="tmpl-img" style="background:linear-gradient(135deg,#263238,#37474f);"></div><div class="tmpl-body"><div class="tmpl-price">215 000 €</div><div class="tmpl-tags"><div class="tmpl-tag">T3</div><div class="tmpl-tag">62m²</div></div></div></div>
+        <div class="tmpl-card"><div class="tmpl-img" style="background:linear-gradient(135deg,#1a237e,#283593);"></div><div class="tmpl-body"><div class="tmpl-price">640 000 €</div><div class="tmpl-tags"><div class="tmpl-tag">5 p.</div><div class="tmpl-tag">145m²</div></div></div></div>
+        <div class="tmpl-card"><div class="tmpl-img" style="background:linear-gradient(135deg,#1b5e20,#2e7d32);"></div><div class="tmpl-body"><div class="tmpl-price">1 100 000 €</div><div class="tmpl-tags"><div class="tmpl-tag">Villa</div><div class="tmpl-tag">220m²</div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="reveal" style="max-width:580px;">
+      <span class="section-tag" data-fr="Comment ça marche" data-en="How it works">Comment ça marche</span>
+      <h2 data-fr="Trois étapes.<br><em>Vingt minutes.</em>" data-en="Three steps.<br><em>Twenty minutes.</em>">Trois étapes.<br><em>Vingt minutes.</em></h2>
+      <p class="sec-sub" data-fr="Pas de compétences techniques requises. Pas d'hébergement à gérer. Un lien, et votre page est en ligne." data-en="No technical skills required. No hosting to manage. One link, and your page is live.">Pas de compétences techniques requises. Pas d'hébergement à gérer. Un lien, et votre page est en ligne.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><div class="step-num">1</div><div class="step-icon">🔗</div><h3 data-fr="Collez le lien" data-en="Paste the link">Collez le lien</h3><p data-fr="Un lien SeLoger, BienIci ou votre annonce. OHOS extrait automatiquement toutes les informations du bien." data-en="A SeLoger, BienIci or your own listing link. OHOS automatically extracts all property information.">Un lien SeLoger, BienIci ou votre annonce. OHOS extrait automatiquement toutes les informations du bien.</p></div>
+      <div class="step"><div class="step-num">2</div><div class="step-icon">✦</div><h3 data-fr="Personnalisez" data-en="Customize">Personnalisez</h3><p data-fr="Ajoutez vos photos, vidéos, lien Calendly. Activez le slider avant/après IA. Choisissez le style de votre agence." data-en="Add your photos, videos, Calendly link. Enable the AI before/after slider. Choose your agency's style.">Ajoutez vos photos, vidéos, lien Calendly. Activez le slider avant/après IA. Choisissez le style de votre agence.</p></div>
+      <div class="step"><div class="step-num">3</div><div class="step-icon">🚀</div><h3 data-fr="Publiez" data-en="Publish">Publiez</h3><p data-fr="Votre page est hébergée, le domaine géré, les leads capturés. Partagez le lien. Recevez les demandes de visite directement." data-en="Your page is hosted, domain managed, leads captured. Share the link. Receive visit requests directly.">Votre page est hébergée, le domaine géré, les leads capturés. Partagez le lien. Recevez les demandes de visite directement.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="features-inner">
+    <div class="reveal" style="max-width:560px;margin-bottom:56px;">
+      <span class="section-tag" data-fr="Fonctionnalités" data-en="Features">Fonctionnalités</span>
+      <h2 data-fr="Tout ce qu'il faut<br>pour <em>vendre mieux.</em>" data-en="Everything you need<br>to <em>sell better.</em>">Tout ce qu'il faut<br>pour <em>vendre mieux.</em></h2>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat"><span class="feat-icon">🎬</span><h3 data-fr="Vidéo en héros" data-en="Hero video">Vidéo en héros</h3><p data-fr="Votre vidéo drone tourne en boucle. Le bien se dévoile avant même que l'acheteur scrolle." data-en="Your drone video loops at the top. The property reveals itself before the buyer even scrolls.">Votre vidéo drone tourne en boucle. Le bien se dévoile avant même que l'acheteur scrolle.</p></div>
+      <div class="feat"><span class="feat-icon">✦</span><h3 data-fr="Slider avant/après IA" data-en="AI before/after slider">Slider avant/après IA</h3><p data-fr="L'IA génère une projection rénovée. L'acheteur voit le potentiel, pas seulement l'état actuel." data-en="AI generates a renovated projection. The buyer sees potential, not just the current state.">L'IA génère une projection rénovée. L'acheteur voit le potentiel, pas seulement l'état actuel.</p></div>
+      <div class="feat"><span class="feat-icon">📅</span><h3 data-fr="Prise de RDV intégrée" data-en="Integrated booking">Prise de RDV intégrée</h3><p data-fr="Votre Calendly directement sur la page. Les acheteurs sérieux bookent seuls, sans aller-retour." data-en="Your Calendly directly on the page. Serious buyers book themselves, no back-and-forth.">Votre Calendly directement sur la page. Les acheteurs sérieux bookent seuls, sans aller-retour.</p></div>
+      <div class="feat"><span class="feat-icon">📐</span><h3 data-fr="Plans téléchargeables" data-en="Downloadable plans">Plans téléchargeables</h3><p data-fr="Plans, DPE, diagnostics disponibles en un clic. Les acheteurs ont tout avant d'appeler." data-en="Plans, energy ratings, diagnostics in one click. Buyers have everything before calling.">Plans, DPE, diagnostics disponibles en un clic. Les acheteurs ont tout avant d'appeler.</p></div>
+      <div class="feat"><span class="feat-icon">👤</span><h3 data-fr="Profil agent" data-en="Agent profile">Profil agent</h3><p data-fr="Votre photo, coordonnées, réseaux sociaux. Chaque bien renforce votre personal branding." data-en="Your photo, contact info, social networks. Every property strengthens your personal brand.">Votre photo, coordonnées, réseaux sociaux. Chaque bien renforce votre personal branding.</p></div>
+      <div class="feat"><span class="feat-icon">📊</span><h3 data-fr="Dashboard & leads" data-en="Dashboard & leads">Dashboard & leads</h3><p data-fr="Tous vos biens dans un seul endroit. Suivez visites, clics, demandes. Vos données." data-en="All your properties in one place. Track visits, clicks, requests. Your data.">Tous vos biens dans un seul endroit. Suivez visites, clics, demandes. Vos données.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="waitlist" id="waitlist">
+  <div class="waitlist-inner reveal">
+    <span class="section-tag" data-fr="Accès anticipé" data-en="Early access">Accès anticipé</span>
+    <h2 data-fr="Rejoignez les<br><em>premiers agents.</em>" data-en="Join the<br><em>first agents.</em>">Rejoignez les<br><em>premiers agents.</em></h2>
+    <p data-fr="OHOS est en développement. Les agents sur liste d'attente seront les premiers à tester — avec des conditions préférentielles au lancement." data-en="OHOS is in development. Waitlisted agents will be first to test — with preferred pricing at launch.">OHOS est en développement. Les agents sur liste d'attente seront les premiers à tester — avec des conditions préférentielles au lancement.</p>
+    <div class="wl-form">
+      <input class="wl-input" type="email" id="wlInput" placeholder="votre@agence.fr">
+      <button class="btn-primary" id="wlBtn" data-fr="Rejoindre" data-en="Join">Rejoindre</button>
+    </div>
+    <p class="wl-note" data-fr="Aucun engagement. Aucune carte bancaire." data-en="No commitment. No credit card.">Aucun engagement. Aucune carte bancaire.</p>
+    <div class="wl-social">
+      <div class="avatars"><div class="av av1">L</div><div class="av av2">M</div><div class="av av3">S</div><div class="av av4">A</div></div>
+      <span id="wlCount" data-fr="47 agents déjà sur la liste" data-en="47 agents already on the list">47 agents déjà sur la liste</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">OH<span>OS</span></div>
+  <p>One Home, One Site · © 2026</p>
+  <p>luca@oh-os.agency</p>
+</footer>
+
+<script>
+// DRAG SLIDER
+const slider = document.getElementById('dragSlider');
+const before = document.getElementById('dsBefore');
+const handle = document.getElementById('dsHandle');
+let dragging = false;
+
+function setPos(pct) {
+  pct = Math.max(0, Math.min(100, pct));
+  before.style.width = pct + '%';
+  handle.style.left = pct + '%';
+}
+function getPct(e) {
+  const r = slider.getBoundingClientRect();
+  const x = e.touches ? e.touches[0].clientX : e.clientX;
+  return ((x - r.left) / r.width) * 100;
+}
+slider.addEventListener('mousedown', e => { dragging = true; setPos(getPct(e)); e.preventDefault(); });
+slider.addEventListener('touchstart', e => { dragging = true; setPos(getPct(e)); }, {passive:true});
+window.addEventListener('mousemove', e => { if (dragging) setPos(getPct(e)); });
+window.addEventListener('touchmove', e => { if (dragging) setPos(getPct(e)); }, {passive:true});
+window.addEventListener('mouseup', () => dragging = false);
+window.addEventListener('touchend', () => dragging = false);
+
+// SCROLL REVEAL
+const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// WAITLIST
+document.getElementById('wlBtn').addEventListener('click', () => {
+  const inp = document.getElementById('wlInput');
+  if (inp.value.includes('@')) {
+    const l = document.documentElement.dataset.lang;
+    inp.value = '';
+    inp.placeholder = l === 'fr' ? '✓ Vous êtes sur la liste !' : "✓ You're on the list!";
+    const cnt = document.getElementById('wlCount');
+    cnt.dataset.fr = '48 agents déjà sur la liste';
+    cnt.dataset.en = '48 agents already on the list';
+    cnt.textContent = l === 'fr' ? '48 agents déjà sur la liste' : '48 agents already on the list';
+  }
+});
+
+// LANGUAGE
+function setLang(lang) {
+  document.documentElement.dataset.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  document.querySelectorAll('[data-fr][data-en]').forEach(el => {
+    if (el.tagName === 'INPUT') return;
+    const val = el.dataset[lang];
+    if (!val) return;
+    if (val.includes('<')) el.innerHTML = val;
+    else el.textContent = val;
+  });
+}
+</script>
+</body>
+</html>
