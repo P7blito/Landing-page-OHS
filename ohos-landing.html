@@ -226,9 +226,21 @@
   .step h3 { font-family:'Instrument Serif',serif; font-size:21px; font-weight:400; margin-bottom:10px; }
   .step p { font-size:14px; color:var(--cream-dim); line-height:1.65; }
 
-  .waitlist { background:var(--bg2); text-align:center; }
-  .waitlist-inner { max-width:560px; margin:0 auto; }
-  .waitlist p { font-size:16px; color:var(--cream-dim); line-height:1.65; margin-bottom:44px; }
+  .waitlist { background:var(--bg2); }
+  .waitlist-grid { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; max-width:1200px; margin:0 auto; }
+  .waitlist-left { text-align:left; }
+  .waitlist-left .section-tag { text-align:left; }
+  .waitlist-left h2 { text-align:left; }
+  .waitlist-left p { font-size:16px; color:var(--cream-dim); line-height:1.65; margin-bottom:44px; }
+  .waitlist-right { position:relative; }
+  .waitlist-right .section-tag { text-align:center; margin-bottom:8px; }
+  .wm-subtitle { font-size:15px; color:var(--cream-dim); text-align:center; margin-bottom:24px; line-height:1.5; }
+  @media(max-width:860px){
+    .waitlist-grid { grid-template-columns:1fr; gap:40px; }
+    .waitlist-left { text-align:center; }
+    .waitlist-left .section-tag, .waitlist-left h2 { text-align:center; }
+    .wl-form { margin:0 auto 16px; }
+  }
   .wl-form { display:flex; gap:10px; max-width:420px; margin:0 auto 16px; }
   .wl-input { flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:4px; padding:13px 16px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s, background 0.3s; }
   .wl-input:focus { border-color:var(--border-gold); }
@@ -248,6 +260,23 @@
   .av-wrap:hover .av-tooltip { opacity:1; transform:translateX(-50%) translateY(0); }
   .av-tooltip-name { font-size:13px; font-weight:600; color:var(--cream); line-height:1.3; }
   .av-tooltip-role { font-size:11px; color:var(--gold); font-weight:400; }
+
+  /* ── WORLD MAP ── */
+  .world-map-wrap { position:relative; width:100%; aspect-ratio:2/1; }
+  .world-map-wrap svg { width:100%; height:100%; }
+  .wm-dot { fill:var(--cream); opacity:0.35; }
+  [data-theme="light"] .wm-dot { fill:#1A1A1B; opacity:0.22; }
+  .wm-arc { fill:none; stroke:var(--gold); stroke-width:1.4; stroke-linecap:round; opacity:0.25; }
+  .wm-arc-trail { fill:none; stroke:var(--gold); stroke-width:2; stroke-linecap:round; stroke-dasharray:14 200; stroke-dashoffset:0; opacity:0; }
+  .wm-arc-trail.animate { animation:arcFlow 3.5s ease-in-out infinite; opacity:1; }
+  @keyframes arcFlow { 0%{stroke-dashoffset:214;opacity:0} 8%{opacity:1} 45%{opacity:1} 85%{opacity:0} 100%{stroke-dashoffset:0;opacity:0} }
+  .wm-pulse { fill:var(--gold); }
+  .wm-pulse-ring { fill:none; stroke:var(--gold); stroke-width:1.2; opacity:0; }
+  .wm-pulse-ring.animate { animation:pulseRing 2.5s ease-out infinite; }
+  @keyframes pulseRing { 0%{r:3;opacity:0.7} 100%{r:14;opacity:0} }
+  .wm-dest { fill:var(--gold); opacity:0.8; }
+  .wm-dest-ring { fill:none; stroke:var(--gold); stroke-width:0.8; opacity:0; }
+  .wm-dest-ring.animate { animation:pulseRing 3s ease-out infinite; }
 
   /* ── FAQ ── */
   .faq { background:var(--bg); }
@@ -473,43 +502,51 @@
 
 <!-- ═══ 6. WAITLIST ═══ -->
 <section class="waitlist" id="waitlist">
-  <div class="waitlist-inner reveal">
-    <span class="section-tag" data-fr="Accès anticipé" data-en="Early access">Accès anticipé</span>
-    <h2 data-fr="Rejoignez les<br><em>premiers agents.</em>" data-en="Join the<br><em>first agents.</em>">Rejoignez les<br><em>premiers agents.</em></h2>
-    <p data-fr="OHOS est en développement. Les agents sur liste d'attente seront les premiers à tester — avec des conditions préférentielles au lancement." data-en="OHOS is in development. Waitlisted agents will be first to test — with preferred pricing at launch.">OHOS est en développement. Les agents sur liste d'attente seront les premiers à tester — avec des conditions préférentielles au lancement.</p>
-    <div class="wl-form">
-      <input class="wl-input" type="email" id="wlInput" placeholder="votre@agence.fr">
-      <button class="btn-primary" id="wlBtn" data-fr="Rejoindre" data-en="Join">Rejoindre</button>
-    </div>
-    <p class="wl-note" data-fr="Aucun engagement. Aucune carte bancaire." data-en="No commitment. No credit card.">Aucun engagement. Aucune carte bancaire.</p>
-    <div class="wl-social">
-      <div class="avatars">
-        <div class="av-wrap">
-          <div class="av-tooltip"><div class="av-tooltip-name">Sophie M.</div><div class="av-tooltip-role">Agent — Nice</div></div>
-          <img class="av" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sophie M.">
-        </div>
-        <div class="av-wrap">
-          <div class="av-tooltip"><div class="av-tooltip-name">Thomas R.</div><div class="av-tooltip-role">Agent — Antibes</div></div>
-          <img class="av" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Thomas R.">
-        </div>
-        <div class="av-wrap">
-          <div class="av-tooltip"><div class="av-tooltip-name">Claire D.</div><div class="av-tooltip-role">Agent — Cannes</div></div>
-          <img class="av" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Claire D.">
-        </div>
-        <div class="av-wrap">
-          <div class="av-tooltip"><div class="av-tooltip-name">Marc B.</div><div class="av-tooltip-role">Agent — Monaco</div></div>
-          <img class="av" src="https://randomuser.me/api/portraits/men/75.jpg" alt="Marc B.">
-        </div>
-        <div class="av-wrap">
-          <div class="av-tooltip"><div class="av-tooltip-name">Nathalie P.</div><div class="av-tooltip-role">Agent — Mougins</div></div>
-          <img class="av" src="https://randomuser.me/api/portraits/women/26.jpg" alt="Nathalie P.">
-        </div>
-        <div class="av-wrap">
-          <div class="av-tooltip"><div class="av-tooltip-name">Laurent V.</div><div class="av-tooltip-role">Agent — Grasse</div></div>
-          <img class="av" src="https://randomuser.me/api/portraits/men/46.jpg" alt="Laurent V.">
-        </div>
+  <div class="waitlist-grid">
+    <!-- LEFT — Waitlist form -->
+    <div class="waitlist-left reveal">
+      <span class="section-tag" data-fr="Accès anticipé" data-en="Early access">Accès anticipé</span>
+      <h2 data-fr="Rejoignez les<br><em>premiers agents.</em>" data-en="Join the<br><em>first agents.</em>">Rejoignez les<br><em>premiers agents.</em></h2>
+      <p data-fr="OHOS est en développement. Les agents sur liste d'attente seront les premiers à tester — avec des conditions préférentielles au lancement." data-en="OHOS is in development. Waitlisted agents will be first to test — with preferred pricing at launch.">OHOS est en développement. Les agents sur liste d'attente seront les premiers à tester — avec des conditions préférentielles au lancement.</p>
+      <div class="wl-form">
+        <input class="wl-input" type="email" id="wlInput" placeholder="votre@agence.fr">
+        <button class="btn-primary" id="wlBtn" data-fr="Rejoindre" data-en="Join">Rejoindre</button>
       </div>
-      <span class="wl-social-count" id="wlCount" data-fr="47 agents déjà sur la liste" data-en="47 agents already on the list">47 agents déjà sur la liste</span>
+      <p class="wl-note" data-fr="Aucun engagement. Aucune carte bancaire." data-en="No commitment. No credit card.">Aucun engagement. Aucune carte bancaire.</p>
+      <div class="wl-social">
+        <div class="avatars">
+          <div class="av-wrap">
+            <div class="av-tooltip"><div class="av-tooltip-name">Sophie M.</div><div class="av-tooltip-role">Agent — Nice</div></div>
+            <img class="av" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sophie M.">
+          </div>
+          <div class="av-wrap">
+            <div class="av-tooltip"><div class="av-tooltip-name">Thomas R.</div><div class="av-tooltip-role">Agent — Antibes</div></div>
+            <img class="av" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Thomas R.">
+          </div>
+          <div class="av-wrap">
+            <div class="av-tooltip"><div class="av-tooltip-name">Claire D.</div><div class="av-tooltip-role">Agent — Cannes</div></div>
+            <img class="av" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Claire D.">
+          </div>
+          <div class="av-wrap">
+            <div class="av-tooltip"><div class="av-tooltip-name">Marc B.</div><div class="av-tooltip-role">Agent — Monaco</div></div>
+            <img class="av" src="https://randomuser.me/api/portraits/men/75.jpg" alt="Marc B.">
+          </div>
+          <div class="av-wrap">
+            <div class="av-tooltip"><div class="av-tooltip-name">Nathalie P.</div><div class="av-tooltip-role">Agent — Mougins</div></div>
+            <img class="av" src="https://randomuser.me/api/portraits/women/26.jpg" alt="Nathalie P.">
+          </div>
+          <div class="av-wrap">
+            <div class="av-tooltip"><div class="av-tooltip-name">Laurent V.</div><div class="av-tooltip-role">Agent — Grasse</div></div>
+            <img class="av" src="https://randomuser.me/api/portraits/men/46.jpg" alt="Laurent V.">
+          </div>
+        </div>
+        <span class="wl-social-count" id="wlCount" data-fr="47 agents déjà sur la liste" data-en="47 agents already on the list">47 agents déjà sur la liste</span>
+      </div>
+    </div>
+    <!-- RIGHT — World Map -->
+    <div class="waitlist-right reveal">
+      <p class="wm-subtitle" data-fr="Inspirez-vous des stratégies des meilleurs agents, partout dans le monde." data-en="Learn from the strategies of top agents, all around the world.">Inspirez-vous des stratégies des meilleurs agents, partout dans le monde.</p>
+      <div class="world-map-wrap" id="worldMap"></div>
     </div>
   </div>
 </section>
@@ -784,6 +821,115 @@ document.getElementById('wlBtn').addEventListener('click', () => {
     cnt.textContent = l === 'fr' ? '48 agents déjà sur la liste' : '48 agents already on the list';
   }
 });
+
+// ── WORLD MAP ──
+(function(){
+  const W=800,H=400,S=8; // viewBox width, height, dot spacing
+  const wrap=document.getElementById('worldMap');
+  if(!wrap)return;
+  const svgNS='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(svgNS,'svg');
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.setAttribute('fill','none');
+
+  // Simplified continent outlines as polygon regions (x,y pairs normalized to 800x400)
+  // Each continent = array of [minX,minY,maxX,maxY] bounding boxes that approximate land
+  const land=[
+    // North America
+    [120,50,260,70],[100,60,270,90],[90,70,260,110],[100,90,250,130],[110,100,220,150],[120,110,200,160],[130,120,190,170],[160,160,200,190],
+    // South America
+    [190,200,260,220],[180,210,270,240],[175,230,265,260],[180,250,260,280],[185,270,250,300],[190,280,240,320],[195,300,235,340],[200,320,230,350],
+    // Europe
+    [370,55,420,70],[360,60,440,80],[355,70,450,95],[360,80,445,100],[370,90,430,110],
+    // Africa
+    [370,130,430,150],[365,140,440,170],[360,150,445,200],[365,190,440,220],[370,210,435,250],[375,240,430,270],[380,260,425,290],[385,270,420,300],
+    // Asia
+    [440,45,520,65],[430,55,560,80],[440,60,600,90],[450,70,620,100],[460,80,640,110],[470,90,650,120],[480,100,640,130],[500,110,620,140],[510,120,600,150],[520,130,580,160],[560,140,620,170],
+    // Middle East / India
+    [450,110,500,140],[460,120,520,150],[470,130,530,160],[480,140,520,170],
+    // Southeast Asia / Indonesia
+    [560,160,620,180],[570,170,630,190],[580,180,650,200],[600,190,660,210],
+    // Australia
+    [590,260,680,280],[580,270,690,300],[585,290,685,310],[590,300,680,320],[600,310,670,330],
+    // Japan / Korea
+    [620,70,650,100],[625,80,660,110],
+  ];
+
+  // Generate dots
+  const dotsG=document.createElementNS(svgNS,'g');
+  for(let y=0;y<H;y+=S){
+    for(let x=0;x<W;x+=S){
+      const onLand=land.some(([x1,y1,x2,y2])=>x>=x1&&x<=x2&&y>=y1&&y<=y2);
+      if(onLand){
+        const c=document.createElementNS(svgNS,'circle');
+        c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',1.6);
+        c.setAttribute('class','wm-dot');
+        dotsG.appendChild(c);
+      }
+    }
+  }
+  svg.appendChild(dotsG);
+
+  // lat/lng to SVG coords (simple equirectangular)
+  function toXY(lat,lng){return[((lng+180)/360)*W,((90-lat)/180)*H]}
+
+  // Connection arcs between real estate hotspots
+  const connections=[
+    {from:[43.7,7.27],to:[48.86,2.35],label:'Nice → Paris'},         // Côte d'Azur → Paris
+    {from:[43.7,7.27],to:[40.71,-74.01],label:'Nice → New York'},     // → NYC
+    {from:[43.7,7.27],to:[25.2,55.27],label:'Nice → Dubai'},          // → Dubai
+    {from:[43.7,7.27],to:[51.51,-0.13],label:'Nice → London'},        // → London
+    {from:[43.7,7.27],to:[1.35,103.82],label:'Nice → Singapore'},     // → Singapore
+    {from:[43.7,7.27],to:[-33.87,151.21],label:'Nice → Sydney'},      // → Sydney
+  ];
+
+  const arcsG=document.createElementNS(svgNS,'g');
+  connections.forEach((conn,i)=>{
+    const [x1,y1]=toXY(...conn.from);
+    const [x2,y2]=toXY(...conn.to);
+    const mx=(x1+x2)/2, my=(y1+y2)/2;
+    const dist=Math.sqrt((x2-x1)**2+(y2-y1)**2);
+    const curveH=Math.min(dist*0.3,80);
+    const d=`M${x1},${y1} Q${mx},${my-curveH} ${x2},${y2}`;
+
+    // Static arc (faint)
+    const arc=document.createElementNS(svgNS,'path');
+    arc.setAttribute('d',d);arc.setAttribute('class','wm-arc');
+    arc.style.opacity='0.15';
+    arcsG.appendChild(arc);
+
+    // Animated trail
+    const trail=document.createElementNS(svgNS,'path');
+    trail.setAttribute('d',d);trail.setAttribute('class','wm-arc-trail animate');
+    trail.style.animationDelay=(i*0.5)+'s';
+    arcsG.appendChild(trail);
+
+    // Origin pulse (Nice)
+    if(i===0){
+      const pulse=document.createElementNS(svgNS,'circle');
+      pulse.setAttribute('cx',x1);pulse.setAttribute('cy',y1);pulse.setAttribute('r',4);
+      pulse.setAttribute('class','wm-pulse');
+      arcsG.appendChild(pulse);
+      const ring=document.createElementNS(svgNS,'circle');
+      ring.setAttribute('cx',x1);ring.setAttribute('cy',y1);ring.setAttribute('r',4);
+      ring.setAttribute('class','wm-pulse-ring animate');
+      arcsG.appendChild(ring);
+    }
+
+    // Destination dot + ring
+    const dot=document.createElementNS(svgNS,'circle');
+    dot.setAttribute('cx',x2);dot.setAttribute('cy',y2);dot.setAttribute('r',3);
+    dot.setAttribute('class','wm-dest');
+    arcsG.appendChild(dot);
+    const dring=document.createElementNS(svgNS,'circle');
+    dring.setAttribute('cx',x2);dring.setAttribute('cy',y2);dring.setAttribute('r',3);
+    dring.setAttribute('class','wm-dest-ring animate');
+    dring.style.animationDelay=(i*0.5)+'s';
+    arcsG.appendChild(dring);
+  });
+  svg.appendChild(arcsG);
+  wrap.appendChild(svg);
+})();
 
 // ── LANGUAGE ──
 function setLang(lang){
